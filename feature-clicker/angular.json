@@ -120,6 +120,14 @@
               "devServerTarget": "feature-clicker:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@netlify-builder/deploy:deploy",
+          "options": {
+            "outputPath": "dist/feature-clicker",
+            "netlifyToken": "",
+            "siteId": "30df406f-737e-493b-9366-49494e44a58f"
+          }
         }
       }
     }
