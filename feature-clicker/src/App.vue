@@ -1,6 +1,10 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
+    <img
+      alt="SystemsThinking.dev logo"
+      class="stdev-logo"
+      src="./assets/logo.png"
+    />
     <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
   </div>
 </template>
@@ -11,8 +15,8 @@ import HelloWorld from "./components/HelloWorld.vue";
 
 @Component({
   components: {
-    HelloWorld
-  }
+    HelloWorld,
+  },
 })
 export default class App extends Vue {}
 </script>
@@ -25,5 +29,9 @@ export default class App extends Vue {}
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.stdev-logo {
+  width: 20%;
 }
 </style>
