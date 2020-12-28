@@ -26,6 +26,8 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('feature-clicker app is running!');
+    const element = compiled.querySelector('main div');
+    expect(element).toBeTruthy("Did not find element 'main div' ")
+    expect(element.textContent).toContain('Feature Clicker');
   });
 });
