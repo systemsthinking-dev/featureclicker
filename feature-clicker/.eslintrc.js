@@ -18,7 +18,8 @@ module.exports = {
     quotes: ["error", "double", {
       avoidEscape: true,
       allowTemplateLiterals: true
-    }]
+    }],
+    "comma-dangle": ["error", "only-multiline"]
   },
   overrides: [
     {
