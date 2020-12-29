@@ -1,5 +1,6 @@
 
 import { Subject, BehaviorSubject } from "rxjs";
+import { map } from "rxjs/operators";
 
 console.log("Does this happen?");
 
@@ -10,7 +11,11 @@ export class ImportantThings {
     this.featureWorkDone = new Subject<number>();
     this.capabilityStock = new BehaviorSubject<number>(0);
 
-    this.featureWorkDone.subscribe(this.capabilityStock);
+    const thing = this.featureWorkDone.pipe(
+      map(_a => { return 1 })
+    );
+
+    thing.subscribe(this.capabilityStock);
   }
 
   public featureWorkDone: Subject<number>;
