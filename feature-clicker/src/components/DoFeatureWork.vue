@@ -1,7 +1,7 @@
 <template>
   <svg>
     <circle
-      v-stream:click="doWork$"
+      v-stream:click="doWork"
       class="feature-work"
       cx="230"
       cy="100"
