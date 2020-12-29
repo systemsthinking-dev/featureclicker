@@ -1,24 +1,30 @@
 
-import { Subject, BehaviorSubject } from "rxjs";
-import { map } from "rxjs/operators";
+import { Subject, BehaviorSubject, Observable } from "rxjs";
+import { reduce, map } from "rxjs/operators";
 
 console.log("Does this happen?");
 
 export const thing = "yes";
 
+type ClickOnFeatureWork = object;
+
 export class ImportantThings {
   constructor() {
-    this.featureWorkDone = new Subject<number>();
+    this.featureWorkDone = new Subject<ClickOnFeatureWork>();
     this.capabilityStock = new BehaviorSubject<number>(0);
 
-    const thing = this.featureWorkDone.pipe(
-      map(_a => { return 1 })
+    let poo = 0;
+    const thing: Observable<number> = this.featureWorkDone.pipe(
+      map((a) => {
+        console.log("so far: " + poo + " incoming: " + a);
+        return poo++;
+      })
     );
 
     thing.subscribe(this.capabilityStock);
   }
 
-  public featureWorkDone: Subject<number>;
+  public featureWorkDone: Subject<ClickOnFeatureWork>;
 
   public capabilityStock: BehaviorSubject<number>;
 }
