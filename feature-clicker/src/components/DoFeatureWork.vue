@@ -23,11 +23,11 @@ import { importantThings } from "../ImportantFile";
 
 @Component<DoFeatureWork>({
   subscriptions() {
-    return { theWork: this.doWork$ };
+    return { theWork: this.doWork };
   },
 })
 export default class DoFeatureWork extends Vue {
-  @Prop({ required: true }) private doWork$!: Subject<"yes">;
+  @Prop({ required: true }) private doWork!: Subject<"yes">;
 }
 </script>
 

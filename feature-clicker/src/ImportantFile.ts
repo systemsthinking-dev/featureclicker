@@ -5,12 +5,10 @@ console.log("Does this happen?");
 
 export const thing = "yes";
 
-export type ImportantThings = {
-  featureWorkDone: Subject<"yes">;
+export class ImportantThings {
+  featureWorkDone = new Subject<"yes">();
 }
 
-export const importantThings: ImportantThings = {
-  featureWorkDone: new Subject(),
-};
+export const importantThings = new ImportantThings();
 
 importantThings.featureWorkDone.subscribe(stuff => { console.log("Got stuff: " + stuff) });

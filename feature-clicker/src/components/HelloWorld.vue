@@ -3,7 +3,7 @@
     {{ msg }}
     <svg class="yo" width="800" height="400">
       Feature Clicker Goes Here
-      <DoFeatureWork :doWork$="importantThings.featureWorkDone" />
+      <DoFeatureWork :doWork="importantThings.featureWorkDone" />
     </svg>
   </main>
 </template>
