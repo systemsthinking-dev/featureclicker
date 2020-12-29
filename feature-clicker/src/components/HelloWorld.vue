@@ -23,22 +23,6 @@ export default class HelloWorld extends Vue {
 
   @Prop({ required: true }) private importantThings!: ImportantThings;
 }
-// export default {
-//   name: "HelloWorld",
-//   components: {
-//     DoFeatureWork,
-//   },
-//   props: {
-//     msg: {
-//       type: String,
-//       required: true,
-//     },
-//     importantThings: {
-//       type: Object,
-//       required: true,
-//     },
-//   },
-// };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only (wow) -->
