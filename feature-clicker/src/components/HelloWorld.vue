@@ -1,7 +1,7 @@
 <template>
   <main class="hello">
-    Feature Clicker Goes Here
     <svg class="yo" width="800" height="400">
+      Feature Clicker Goes Here
       <circle cx="230" cy="100" r="70" stroke="black" fill="orange" />
       <text x="100" y="100" font-size="20" text-anchor="middle" fill="black">
         <tspan>Work on</tspan>
