@@ -4,7 +4,7 @@
     <svg class="yo" width="800" height="400">
       Feature Clicker Goes Here
       <DoFeatureWork :doWork="importantThings.featureWorkDone" />
-      <capability-stock quantity="7" />
+      <capability-stock :quantityObservable="importantThings.capabilityStock" />
     </svg>
   </main>
 </template>

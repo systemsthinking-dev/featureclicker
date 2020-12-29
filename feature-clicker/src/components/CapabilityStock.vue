@@ -4,13 +4,19 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { Subject } from "rxjs";
-import Rx from "vue-rx";
+import { Observable } from "rxjs";
+import VueRx from "vue-rx";
 import { importantThings } from "../ImportantFile";
 
-@Component
+@Component<CapabilityStock>({
+  subscriptions() {
+    return {
+      quantity: this.quantityObservable,
+    };
+  },
+})
 export default class CapabilityStock extends Vue {
-  @Prop({ required: true }) private quantity!: number;
+  @Prop({ required: true }) private quantityObservable!: Observable<number>;
 }
 </script>
 
