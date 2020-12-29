@@ -1,6 +1,6 @@
 
 import { Subject, BehaviorSubject, Observable } from "rxjs";
-import { reduce, map } from "rxjs/operators";
+import { scan } from "rxjs/operators";
 
 console.log("Does this happen?");
 
@@ -13,12 +13,8 @@ export class ImportantThings {
     this.featureWorkDone = new Subject<ClickOnFeatureWork>();
     this.capabilityStock = new BehaviorSubject<number>(0);
 
-    let poo = 0;
     const thing: Observable<number> = this.featureWorkDone.pipe(
-      map((a) => {
-        console.log("so far: " + poo + " incoming: " + a);
-        return poo++;
-      })
+      scan(countSoFar => countSoFar + 1, 0)
     );
 
     thing.subscribe(this.capabilityStock);
