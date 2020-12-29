@@ -4,6 +4,7 @@
     <svg class="yo" width="800" height="400">
       Feature Clicker Goes Here
       <DoFeatureWork :doWork="importantThings.featureWorkDone" />
+      <text x="400" y="200">4</text>
     </svg>
   </main>
 </template>
