@@ -3,7 +3,7 @@
     {{ msg }}
     <svg class="yo" width="800" height="400">
       Feature Clicker Goes Here
-      <DoFeatureWork :doWork="importantThings.featureWorkDone" />
+      <DoFeatureWork :doWork$="importantThings.featureWorkDone" />
     </svg>
   </main>
 </template>
@@ -19,10 +19,26 @@ import DoFeatureWork from "./DoFeatureWork.vue";
   },
 })
 export default class HelloWorld extends Vue {
-  @Prop() private msg!: string;
+  @Prop({ default: "Yo there" }) private msg!: string;
 
-  @Prop() private importantThings!: ImportantThings;
+  @Prop({ required: true }) private importantThings!: ImportantThings;
 }
+// export default {
+//   name: "HelloWorld",
+//   components: {
+//     DoFeatureWork,
+//   },
+//   props: {
+//     msg: {
+//       type: String,
+//       required: true,
+//     },
+//     importantThings: {
+//       type: Object,
+//       required: true,
+//     },
+//   },
+// };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only (wow) -->

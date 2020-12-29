@@ -21,16 +21,13 @@ import { Subject } from "rxjs";
 import Rx from "vue-rx";
 import { importantThings } from "../ImportantFile";
 
-@Component({
+@Component<DoFeatureWork>({
   subscriptions() {
-    // @ts-ignore
-    this.doWork$ = importantThings.featureWorkDone;
-    // @ts-ignore
     return { theWork: this.doWork$ };
   },
 })
 export default class DoFeatureWork extends Vue {
-  private doWork$!: Subject<"yes">;
+  @Prop({ required: true }) private doWork$!: Subject<"yes">;
 }
 </script>
 
