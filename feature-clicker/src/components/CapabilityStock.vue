@@ -1,5 +1,5 @@
 <template>
-  <text>4</text>
+  <text class="capability-quantity" x="500" y="100">6</text>
 </template>
 
 <script lang="ts">
