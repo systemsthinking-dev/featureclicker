@@ -5,20 +5,32 @@
       class="stdev-logo"
       src="./assets/logo.png"
     />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+    <HelloWorld :msg="thinger" :importantThings="importantThings" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import HelloWorld from "./components/HelloWorld.vue";
+import { thing, importantThings } from "./ImportantFile";
+import VueRx from "vue-rx";
+
+Vue.use(VueRx);
 
 @Component({
   components: {
     HelloWorld,
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  get thinger() {
+    return thing;
+  }
+
+  get importantThings() {
+    return importantThings;
+  }
+}
 </script>
 
 <style>

@@ -1,14 +1,16 @@
 <template>
   <main class="hello">
+    {{ msg }}
     <svg class="yo" width="800" height="400">
       Feature Clicker Goes Here
-      <DoFeatureWork />
+      <DoFeatureWork :doWork="importantThings.featureWorkDone" />
     </svg>
   </main>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { ImportantThings } from "../ImportantFile";
 import DoFeatureWork from "./DoFeatureWork.vue";
 
 @Component({
@@ -18,6 +20,8 @@ import DoFeatureWork from "./DoFeatureWork.vue";
 })
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
+
+  @Prop() private importantThings!: ImportantThings;
 }
 </script>
 
