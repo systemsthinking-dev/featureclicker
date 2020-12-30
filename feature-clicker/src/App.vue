@@ -12,7 +12,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import HelloWorld from "./components/HelloWorld.vue";
-import { thing, importantThings } from "./ImportantFile";
+import { importantThings } from "./ImportantFile";
 import VueRx from "vue-rx";
 
 Vue.use(VueRx);
@@ -23,10 +23,6 @@ Vue.use(VueRx);
   },
 })
 export default class App extends Vue {
-  get thinger() {
-    return thing;
-  }
-
   get importantThings() {
     return importantThings;
   }
