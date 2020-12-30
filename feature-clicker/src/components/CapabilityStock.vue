@@ -1,9 +1,15 @@
 <template>
-  <svg x="450" y="50">
-    <circle class="capability-stock" :r="circleRadius" cx="50" cy="50" />
-    <text class="capability-quantity" alignment-baseline="middle" x="50" y="50">
+  <svg x="350" y="50">
+    <circle class="capability-stock" :r="circleRadius" cx="150" cy="50" />
+    <text
+      class="capability-quantity"
+      alignment-baseline="middle"
+      x="150"
+      y="50"
+    >
       {{ quantity }}
     </text>
+    <text class="vps" x="150" y="70">value per second</text>
   </svg>
 </template>
 
@@ -39,7 +45,7 @@ circle.capability-stock {
   fill: lightgreen;
   transition-duration: 1s;
 }
-text.capability-quantity {
+text {
   text-anchor: middle;
 }
 </style>
