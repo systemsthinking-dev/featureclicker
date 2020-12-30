@@ -15,7 +15,7 @@ module.exports = {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "space-before-function-paren": "off",
-    semi: ["error", "always", { "omitLastInOneLineBlock": true }],
+    semi: ["error", "always", { omitLastInOneLineBlock: true }],
     quotes: ["error", "double", {
       avoidEscape: true,
       allowTemplateLiterals: true

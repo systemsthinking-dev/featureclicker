@@ -6,28 +6,45 @@
       cx="230"
       cy="100"
       stroke="black"
-      fill="orange"
     />
     <text x="100" y="100" font-size="20" text-anchor="middle" fill="black">
       <tspan>Work on</tspan>
       <tspan x="100" dy="1.2em">features</tspan>
     </text>
+    <circle
+      v-for="dot in theWork"
+      :key="dot.timestamp"
+      :id="'dot' + dot.timestamp"
+      class="feature-work-on-the-move"
+      cx="500"
+      cy="100"
+      r="5"
+    />
   </svg>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { Subject } from "rxjs";
-import Rx from "vue-rx";
-import { importantThings } from "../ImportantFile";
+import { Subject, Observable } from "rxjs";
+import { map, scan } from "rxjs/operators";
+import { ClickOnFeatureWork } from "../ImportantFile";
+import { Timestamped, allRecent } from "../TryThis";
 
 @Component<DoFeatureWork>({
   subscriptions() {
-    return { theWork: this.doWork };
+    return {
+      theWork: this.doWork.pipe(
+        map((p) => ({ timestamp: p.event.timeStamp })),
+        scan(allRecent(3000), [] as Array<Timestamped>)
+      ),
+    };
   },
 })
 export default class DoFeatureWork extends Vue {
-  @Prop({ required: true }) private doWork!: Subject<"yes">;
+  @Prop({ required: true }) private doWork!: Subject<ClickOnFeatureWork>;
+
+  // subscription
+  private theWork!: Observable<Timestamped>;
 }
 </script>
 
@@ -36,8 +53,23 @@ circle.feature-work {
   r: 70;
   transition-property: r;
   transition-duration: 0.5s;
+  fill: orange;
 }
 circle.feature-work:active {
   r: 65;
+}
+.feature-work-on-the-move {
+  animation: zoop 2s;
+  animation-timing-function: linear;
+  fill: orange;
+}
+
+@keyframes zoop {
+  0% {
+    cx: 230;
+  }
+  100% {
+    cx: 500;
+  }
 }
 </style>
