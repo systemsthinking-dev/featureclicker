@@ -4,6 +4,7 @@
     <svg class="yo" width="800" height="400">
       Feature Clicker Goes Here
       <DoFeatureWork :doWork="importantThings.featureWorkDone" />
+      <capability-stock :quantityObservable="importantThings.capabilityStock" />
     </svg>
   </main>
 </template>
@@ -12,16 +13,18 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { ImportantThings } from "../ImportantFile";
 import DoFeatureWork from "./DoFeatureWork.vue";
+import CapabilityStock from "./CapabilityStock.vue";
 
 @Component({
   components: {
     DoFeatureWork,
+    CapabilityStock,
   },
 })
 export default class HelloWorld extends Vue {
-  @Prop() private msg!: string;
+  @Prop({ default: "Yo there" }) private msg!: string;
 
-  @Prop() private importantThings!: ImportantThings;
+  @Prop({ required: true }) private importantThings!: ImportantThings;
 }
 </script>
 

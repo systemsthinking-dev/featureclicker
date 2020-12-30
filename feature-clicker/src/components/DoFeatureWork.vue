@@ -1,7 +1,7 @@
 <template>
   <svg>
     <circle
-      v-stream:click="doWork$"
+      v-stream:click="doWork"
       class="feature-work"
       cx="230"
       cy="100"
@@ -21,16 +21,13 @@ import { Subject } from "rxjs";
 import Rx from "vue-rx";
 import { importantThings } from "../ImportantFile";
 
-@Component({
+@Component<DoFeatureWork>({
   subscriptions() {
-    // @ts-ignore
-    this.doWork$ = importantThings.featureWorkDone;
-    // @ts-ignore
-    return { theWork: this.doWork$ };
+    return { theWork: this.doWork };
   },
 })
 export default class DoFeatureWork extends Vue {
-  private doWork$!: Subject<"yes">;
+  @Prop({ required: true }) private doWork!: Subject<"yes">;
 }
 </script>
 
