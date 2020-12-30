@@ -1,11 +1,11 @@
 <template>
   <div id="app">
+    <HelloWorld :msg="thinger" :importantThings="importantThings" />
     <img
       alt="SystemsThinking.dev logo"
       class="stdev-logo"
       src="./assets/logo.png"
     />
-    <HelloWorld :msg="thinger" :importantThings="importantThings" />
   </div>
 </template>
 
@@ -41,5 +41,6 @@ export default class App extends Vue {
 
 .stdev-logo {
   width: 20%;
+  margin: 20px;
 }
 </style>
