@@ -22,7 +22,7 @@ import CapabilityStock from "./CapabilityStock.vue";
   },
 })
 export default class HelloWorld extends Vue {
-  @Prop({ default: "Yo there" }) private msg!: string;
+  @Prop({ default: "Software Development Simulator" }) private msg!: string;
 
   @Prop({ required: true }) private importantThings!: ImportantThings;
 }
