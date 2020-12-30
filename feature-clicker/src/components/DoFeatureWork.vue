@@ -26,55 +26,26 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { Subject } from "rxjs";
+import { Subject, Observable } from "rxjs";
 import { pluck, scan } from "rxjs/operators";
 import { ClickOnFeatureWork } from "../ImportantFile";
-
-/**
- * Accumulates all objects with a timestamp within the last so many seconds
- * Mutates the input array and then returns it.
- */
-type Timestamped = { timestamp: number };
-function allRecent(
-  seconds: number
-): (arr: Array<Timestamped>, one: Timestamped) => Array<Timestamped> {
-  /* mutates the array */
-  function removeAllOlderThan(
-    timestamp: number,
-    arr: Array<Timestamped>
-  ): void {
-    // assumption: oldest ones are first
-    if (arr.length === 0) {
-      return;
-    }
-    if (arr[0].timestamp > timestamp) {
-      // first one is new enough
-      return;
-    }
-    arr.shift();
-    removeAllOlderThan(timestamp, arr);
-  }
-
-  return (all, one) => {
-    removeAllOlderThan(Date.now() - seconds * 1000, all);
-    // the new one goes last
-    all.push(one);
-    return all;
-  };
-}
+import { Timestamped, allRecent } from "../TryThis";
 
 @Component<DoFeatureWork>({
   subscriptions() {
     return {
       theWork: this.doWork.pipe(
         pluck("data"),
-        scan(allRecent(3), [] as Array<Timestamped>)
+        scan(allRecent(3000), [] as Array<Timestamped>)
       ),
     };
   },
 })
 export default class DoFeatureWork extends Vue {
   @Prop({ required: true }) private doWork!: Subject<ClickOnFeatureWork>;
+
+  // subscription
+  private theWork!: Observable<Timestamped>;
 }
 </script>
 
