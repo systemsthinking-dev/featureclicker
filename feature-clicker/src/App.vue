@@ -1,11 +1,13 @@
 <template>
   <div id="app">
     <HelloWorld :msg="thinger" :importantThings="importantThings" />
-    <img
-      alt="SystemsThinking.dev logo"
-      class="stdev-logo"
-      src="./assets/logo.png"
-    />
+    <a href="https://systemsthinking.dev">
+      <img
+        alt="SystemsThinking.dev logo"
+        class="stdev-logo"
+        src="./assets/logo.png"
+      />
+    </a>
   </div>
 </template>
 
