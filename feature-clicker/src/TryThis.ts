@@ -20,6 +20,7 @@ export function allRecent(
       // first one is new enough
       return;
     }
+    console.log("Removing a timestamp " + arr[0].timestamp + " because it's older than " + timestamp);
     arr.shift();
     removeAllOlderThan(timestamp, arr);
   }

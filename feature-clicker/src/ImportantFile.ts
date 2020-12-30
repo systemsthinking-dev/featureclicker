@@ -1,12 +1,10 @@
 
 import { Subject, BehaviorSubject, Observable } from "rxjs";
-import { scan } from "rxjs/operators";
+import { scan, delay } from "rxjs/operators";
 
 console.log("Does this happen?");
 
-export const thing = "yes";
-
-export type ClickOnFeatureWork = { data: { timestamp: number } };
+export type ClickOnFeatureWork = { event: Event };
 
 export class ImportantThings {
   constructor() {
@@ -14,7 +12,8 @@ export class ImportantThings {
     this.capabilityStock = new BehaviorSubject<number>(0);
 
     const thing: Observable<number> = this.featureWorkDone.pipe(
-      scan(countSoFar => countSoFar + 1, 0)
+      scan(countSoFar => countSoFar + 1, 0),
+      delay(2000)
     );
 
     thing.subscribe(this.capabilityStock);
@@ -30,4 +29,4 @@ export const importantThings = new ImportantThings();
 // @ts-ignore
 window.things = importantThings;
 
-importantThings.featureWorkDone.subscribe(stuff => { console.log("Got stuff: " + JSON.stringify(stuff, null, 2)) });
+importantThings.featureWorkDone.subscribe(stuff => { console.log("Got event at time: " + stuff.event?.timeStamp) });

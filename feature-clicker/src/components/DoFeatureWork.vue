@@ -1,12 +1,11 @@
 <template>
   <svg>
     <circle
-      v-stream:click="{ subject: doWork, data: { timestamp: Date.now() } }"
+      v-stream:click="doWork"
       class="feature-work"
       cx="230"
       cy="100"
       stroke="black"
-      fill="orange"
     />
     <text x="100" y="100" font-size="20" text-anchor="middle" fill="black">
       <tspan>Work on</tspan>
@@ -17,8 +16,8 @@
       :key="dot.timestamp"
       :id="'dot' + dot.timestamp"
       class="feature-work-on-the-move"
-      cx="400"
-      cy="200"
+      cx="500"
+      cy="100"
       r="5"
     />
   </svg>
@@ -27,7 +26,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Subject, Observable } from "rxjs";
-import { pluck, scan } from "rxjs/operators";
+import { map, scan } from "rxjs/operators";
 import { ClickOnFeatureWork } from "../ImportantFile";
 import { Timestamped, allRecent } from "../TryThis";
 
@@ -35,7 +34,7 @@ import { Timestamped, allRecent } from "../TryThis";
   subscriptions() {
     return {
       theWork: this.doWork.pipe(
-        pluck("data"),
+        map((p) => ({ timestamp: p.event.timeStamp })),
         scan(allRecent(3000), [] as Array<Timestamped>)
       ),
     };
@@ -54,6 +53,7 @@ circle.feature-work {
   r: 70;
   transition-property: r;
   transition-duration: 0.5s;
+  fill: orange;
 }
 circle.feature-work:active {
   r: 65;
@@ -61,14 +61,15 @@ circle.feature-work:active {
 .feature-work-on-the-move {
   animation: zoop 2s;
   animation-timing-function: linear;
+  fill: orange;
 }
 
 @keyframes zoop {
   0% {
-    cx: 0;
+    cx: 230;
   }
   100% {
-    cx: 400;
+    cx: 500;
   }
 }
 </style>
