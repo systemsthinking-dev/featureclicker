@@ -6,7 +6,7 @@ console.log("Does this happen?");
 
 export const thing = "yes";
 
-type ClickOnFeatureWork = object;
+export type ClickOnFeatureWork = { data: { timestamp: number } };
 
 export class ImportantThings {
   constructor() {
@@ -30,4 +30,4 @@ export const importantThings = new ImportantThings();
 // @ts-ignore
 window.things = importantThings;
 
-importantThings.featureWorkDone.subscribe(stuff => { console.log("Got stuff: " + stuff) });
+importantThings.featureWorkDone.subscribe(stuff => { console.log("Got stuff: " + JSON.stringify(stuff, null, 2)) });
