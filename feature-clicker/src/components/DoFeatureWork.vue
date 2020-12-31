@@ -1,6 +1,6 @@
 <template>
   <svg>
-    <line x1="230" y1="100" x2="500" y2="100" stroke="black" />
+    <line x1="230" y1="100" x2="500" y2="100" />
     <circle
       v-for="dot in theWork"
       :key="dot.timestamp"
@@ -68,6 +68,10 @@ export default class DoFeatureWork extends Vue {
 </script>
 
 <style scoped>
+line {
+  stroke: orange;
+  stroke-width: 0.5px;
+}
 text {
   pointer-events: none;
 }
