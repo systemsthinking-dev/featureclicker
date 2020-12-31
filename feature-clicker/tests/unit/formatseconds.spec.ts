@@ -6,10 +6,9 @@ function formatSeconds(seconds: number): string {
   function padTo2Digits(n: number): string { return n < 10 ? "0" + n : "" + n }
   const hours = Math.floor(seconds / (60 * 60));
   const minutes = Math.floor((seconds % (60 * 60)) / 60);
-  const prettyMinutes = padTo2Digits(minutes);
   const onlySeconds = seconds % 60;
   const prettySeconds = padTo2Digits(onlySeconds);
-  return (hours ? hours + ":" + prettyMinutes : minutes) + ":" + prettySeconds;
+  return (hours ? hours + ":" + padTo2Digits(minutes) : minutes) + ":" + prettySeconds;
 }
 
 describe("formatSeconds looks nice", () => {
