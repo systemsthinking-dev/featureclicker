@@ -1,7 +1,7 @@
 <template>
   <svg x="600" y="10" height="100%">
-    <text x="50" y="20">{{ elapsedTime }}</text>
-    <text x="50" y="40">{{ money }}</text>
+    <text x="100" y="20">Total Value Created</text>
+    <text x="100" y="40">{{ money }}</text>
   </svg>
 </template>
 
