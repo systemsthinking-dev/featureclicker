@@ -5,6 +5,7 @@
       Feature Clicker Goes Here
       <DoFeatureWork :doWork="importantThings.featureWorkDone" />
       <capability-stock :quantityObservable="importantThings.capabilityStock" />
+      <total-value-created />
     </svg>
   </main>
 </template>
@@ -14,11 +15,13 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { ImportantThings } from "../ImportantFile";
 import DoFeatureWork from "./DoFeatureWork.vue";
 import CapabilityStock from "./CapabilityStock.vue";
+import TotalValueCreated from "./TotalValueCreated.vue";
 
 @Component({
   components: {
     DoFeatureWork,
     CapabilityStock,
+    TotalValueCreated,
   },
 })
 export default class HelloWorld extends Vue {

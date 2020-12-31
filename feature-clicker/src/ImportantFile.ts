@@ -5,6 +5,7 @@ import { scan, delay } from "rxjs/operators";
 console.log("Does this happen?");
 
 export type ClickOnFeatureWork = { event: Event };
+export type SecondsSinceBegin = number;
 
 export class ImportantThings {
   constructor() {
