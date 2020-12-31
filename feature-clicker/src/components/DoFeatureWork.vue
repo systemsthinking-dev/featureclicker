@@ -1,6 +1,15 @@
 <template>
   <svg>
     <circle
+      v-for="dot in theWork"
+      :key="dot.timestamp"
+      :id="'dot' + dot.timestamp"
+      class="feature-work-on-the-move"
+      cx="500"
+      cy="100"
+      r="5"
+    />
+    <circle
       v-stream:click="doWork"
       class="feature-work"
       cx="230"
@@ -11,15 +20,6 @@
       <tspan>Work on</tspan>
       <tspan x="100" dy="1.2em">features</tspan>
     </text>
-    <circle
-      v-for="dot in theWork"
-      :key="dot.timestamp"
-      :id="'dot' + dot.timestamp"
-      class="feature-work-on-the-move"
-      cx="500"
-      cy="100"
-      r="5"
-    />
     <text
       v-if="!hasDoneAnyWork"
       x="230"
