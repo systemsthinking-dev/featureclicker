@@ -33,4 +33,4 @@ export const importantThings = new ImportantThings();
 // @ts-ignore
 window.things = importantThings;
 
-importantThings.featureWorkDone.subscribe(stuff => { console.log("Got event at time: " + stuff.event?.timeStamp) });
+// importantThings.featureWorkDone.subscribe(stuff => { console.log("Got event at time: " + stuff.event?.timeStamp) });

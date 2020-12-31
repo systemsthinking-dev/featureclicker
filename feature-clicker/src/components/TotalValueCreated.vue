@@ -10,7 +10,7 @@ import { Observable } from "rxjs";
 import { SecondsSinceBegin } from "../ImportantFile";
 import { map } from "rxjs/operators";
 
-function formatSeconds(seconds: number): string {
+export function formatSeconds(seconds: number): string {
   return "" + seconds;
 }
 
