@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <HelloWorld :msg="thinger" :importantThings="importantThings" />
-    <a href="https://systemsthinking.dev">
+    <a href="https://systemsthinking.dev" target="_blank">
       <img
         alt="SystemsThinking.dev logo"
         class="stdev-logo"
