@@ -4,7 +4,7 @@
     <text x="100" y="40">{{ money }}</text>
     <linearGradient id="here-comes-money" x1="0" x2="0" y1="1" y2="0">
       <stop class="stop1" :offset="fullOfMoney" />
-      <stop class="stop2" offset="55%" />
+      <stop class="stop2" :offset="whiffOfMoney" />
     </linearGradient>
     <rect class="money-growing" x="75" width="50" y="60" height="300" />
   </svg>
@@ -39,14 +39,18 @@ function formatMoney(valueCreated: ValueCreated) {
 
 @Component<TotalValueCreated>({
   subscriptions() {
-    const valueToFillRectangle = 100000;
+    const valueToFillRectangle = 100000; // $1,000.00
     function percentageFullOfMoney(tv: ValueCreated) {
-      return Math.floor((tv / valueToFillRectangle) * 100) + "%";
+      return Math.max(0, (tv / valueToFillRectangle) * 100 - 2.5) + "%";
+    }
+    function percentageSniffingMoney(tv: ValueCreated) {
+      return Math.min(100, (tv / valueToFillRectangle) * 100 + 2.5) + "%";
     }
     return {
       elapsedTime: this.secondsSinceBegin.pipe(map(formatSeconds)),
       money: this.totalValueCreated.pipe(map(formatMoney)),
       fullOfMoney: this.totalValueCreated.pipe(map(percentageFullOfMoney)),
+      whiffOfMoney: this.totalValueCreated.pipe(map(percentageSniffingMoney)),
     };
   },
 })
