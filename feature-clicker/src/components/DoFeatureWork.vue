@@ -9,7 +9,18 @@
       cy="100"
       r="5"
     />
-    <circle v-stream:click="doWork" class="feature-work" cx="230" cy="100" />
+    <radialGradient id="PrettyOrangeButton">
+      <stop offset="0%" stop-color="rgba(247, 154, 4, 1)" />
+      <stop offset="89" stop-color="rgba(219, 138, 10, 1)" />
+      <stop offset="100%" stop-color="rgba(255, 255, 255, 1) " />
+    </radialGradient>
+    <circle
+      v-stream:click="doWork"
+      class="feature-work"
+      cx="230"
+      cy="100"
+      fill="url(#PrettyOrangeButton)"
+    />
     <text x="100" y="100" font-size="20" text-anchor="middle" fill="black">
       <tspan>Work on</tspan>
       <tspan x="100" dy="1.2em">features</tspan>
@@ -63,13 +74,6 @@ circle.feature-work {
   r: 70;
   transition-property: r;
   transition-duration: 0.5s;
-  fill: rgb(247, 154, 4);
-  fill: radial-gradient(
-    circle,
-    rgba(247, 154, 4, 1) 0%,
-    rgba(219, 138, 10, 1) 89%,
-    rgba(255, 255, 255, 1) 100%
-  );
 }
 circle.feature-work:active {
   r: 65;
