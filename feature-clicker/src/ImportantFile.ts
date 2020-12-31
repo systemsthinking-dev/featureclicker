@@ -12,9 +12,9 @@ export class ImportantThings {
     this.featureWorkDone = new Subject<ClickOnFeatureWork>();
     this.capabilityStock = new BehaviorSubject<number>(0);
     this.secondsSinceBegin = this.featureWorkDone.pipe(
-      first(),
-      mergeMap(_t => timer(0, 1000)),
-      startWith(0)); // start on the first click
+      first(), // on the first click,
+      mergeMap(_t => timer(0, 1000)), // start emitting numbers every second
+      startWith(0)); // before that, be 0
 
     const thing: Observable<number> = this.featureWorkDone.pipe(
       scan(countSoFar => countSoFar + 1, 0),
