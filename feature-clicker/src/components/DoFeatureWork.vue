@@ -20,7 +20,14 @@
       cy="100"
       r="5"
     />
-    <text x="230" y="100" font-size="30" text-anchor="middle" fill="white">
+    <text
+      v-if="!hasDoneAnyWork"
+      x="230"
+      y="100"
+      font-size="30"
+      text-anchor="middle"
+      fill="white"
+    >
       <tspan>Click</tspan>
       <tspan x="230" dy="1.2em">Here</tspan>
     </text>
@@ -29,8 +36,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { Subject, Observable } from "rxjs";
-import { map, scan } from "rxjs/operators";
+import { Subject, Observable, of } from "rxjs";
+import { map, scan, first, startWith, mapTo } from "rxjs/operators";
 import { ClickOnFeatureWork } from "../ImportantFile";
 import { Timestamped, allRecent } from "../TryThis";
 
@@ -41,6 +48,7 @@ import { Timestamped, allRecent } from "../TryThis";
         map((p) => ({ timestamp: p.event.timeStamp })),
         scan(allRecent(3000), [] as Array<Timestamped>)
       ),
+      hasDoneAnyWork: this.doWork.pipe(first(), mapTo(true), startWith(false)),
     };
   },
 })
@@ -49,10 +57,14 @@ export default class DoFeatureWork extends Vue {
 
   // subscription
   private theWork!: Observable<Timestamped>;
+  private hasDoneAnyWork!: Observable<boolean>;
 }
 </script>
 
 <style scoped>
+text {
+  pointer-events: none;
+}
 circle.feature-work {
   r: 70;
   transition-property: r;
