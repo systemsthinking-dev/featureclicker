@@ -1,6 +1,7 @@
 <template>
   <svg x="600" y="10" height="100%">
     <text x="50" y="20">{{ elapsedTime }}</text>
+    <text x="50" y="40">$5,003.43</text>
   </svg>
 </template>
 
@@ -42,5 +43,6 @@ export default class TotalValueCreated extends Vue {
 <style scoped>
 text {
   fill: black;
+  text-anchor: middle;
 }
 </style>
