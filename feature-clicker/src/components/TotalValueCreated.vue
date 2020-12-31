@@ -1,14 +1,14 @@
 <template>
   <svg x="600" y="10" height="100%">
     <text x="50" y="20">{{ elapsedTime }}</text>
-    <text x="50" y="40">$5,003.43</text>
+    <text x="50" y="40">{{ money }}</text>
   </svg>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Observable } from "rxjs";
-import { SecondsSinceBegin } from "../ImportantFile";
+import { SecondsSinceBegin, ValueCreated } from "../ImportantFile";
 import { map } from "rxjs/operators";
 
 export function formatSeconds(allTheSeconds: number): string {
@@ -29,12 +29,16 @@ export function formatSeconds(allTheSeconds: number): string {
   subscriptions() {
     return {
       elapsedTime: this.secondsSinceBegin.pipe(map(formatSeconds)),
+      money: this.totalValueCreated,
     };
   },
 })
 export default class TotalValueCreated extends Vue {
   @Prop({ required: true })
   private secondsSinceBegin!: Observable<SecondsSinceBegin>;
+
+  @Prop({ required: true })
+  private totalValueCreated!: Observable<ValueCreated>;
 
   private elapsedTime!: Observable<number>;
 }

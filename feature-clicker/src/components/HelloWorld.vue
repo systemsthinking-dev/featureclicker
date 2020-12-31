@@ -7,6 +7,7 @@
       <capability-stock :quantityObservable="importantThings.capabilityStock" />
       <total-value-created
         :secondsSinceBegin="importantThings.secondsSinceBegin"
+        :totalValueCreated="importantThings.totalValueCreated"
       />
     </svg>
   </main>
