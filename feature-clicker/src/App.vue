@@ -1,12 +1,19 @@
 <template>
   <div id="app">
     <HelloWorld :importantThings="importantThings" />
+
     <a href="https://systemsthinking.dev" target="_blank">
       <img
         alt="SystemsThinking.dev logo"
         class="stdev-logo"
         src="./assets/logo.png"
       />
+    </a>
+    <a
+      href="https://github.com/systemsthinking-dev/featureclicker"
+      target="_blank"
+    >
+      <img alt="GitHub" class="github-logo" src="./assets/GitHub_Logo.png" />
     </a>
   </div>
 </template>
@@ -39,6 +46,10 @@ export default class App extends Vue {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.github-logo {
+  width: 100px;
 }
 
 .stdev-logo {
