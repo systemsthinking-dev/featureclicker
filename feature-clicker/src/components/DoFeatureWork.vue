@@ -74,6 +74,7 @@ line {
 }
 text {
   pointer-events: none;
+  user-select: none;
 }
 circle.feature-work {
   r: 70;
