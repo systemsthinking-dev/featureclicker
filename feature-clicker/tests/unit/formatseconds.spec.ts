@@ -8,7 +8,7 @@ function formatSeconds(seconds: number): string {
   const minutes = Math.floor((seconds % (60 * 60)) / 60);
   const prettyMinutes = padTo2Digits(minutes);
   const onlySeconds = seconds % 60;
-  const prettySeconds = onlySeconds < 10 ? "0" + onlySeconds : onlySeconds;
+  const prettySeconds = padTo2Digits(onlySeconds);
   return (hours ? hours + ":" + prettyMinutes : minutes) + ":" + prettySeconds;
 }
 
