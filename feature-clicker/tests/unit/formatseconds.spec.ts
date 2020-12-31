@@ -7,8 +7,7 @@ function formatSeconds(allTheSeconds: number): string {
   const hours = Math.floor(allTheSeconds / (60 * 60));
   const minutes = Math.floor((allTheSeconds % (60 * 60)) / 60);
   const seconds = allTheSeconds % 60;
-  const prettySeconds = padTo2Digits(seconds);
-  return (hours ? hours + ":" + padTo2Digits(minutes) : minutes) + ":" + prettySeconds;
+  return (hours ? hours + ":" + padTo2Digits(minutes) : minutes) + ":" + padTo2Digits(seconds);
 }
 
 describe("formatSeconds looks nice", () => {
