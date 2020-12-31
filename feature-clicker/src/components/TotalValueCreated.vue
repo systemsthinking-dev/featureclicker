@@ -2,8 +2,8 @@
   <svg x="600" y="10" height="100%">
     <text x="100" y="20">Total Value Created</text>
     <text x="100" y="40">{{ money }}</text>
-    <linearGradient id="here-comes-money" x1="0" x2="0" y1="0" y2="1">
-      <stop class="stop1" offset="50%" />
+    <linearGradient id="here-comes-money" x1="0" x2="0" y1="1" y2="0">
+      <stop class="stop1" :offset="fullOfMoney" />
       <stop class="stop2" offset="55%" />
     </linearGradient>
     <rect class="money-growing" x="75" width="50" y="60" height="300" />
@@ -39,9 +39,14 @@ function formatMoney(valueCreated: ValueCreated) {
 
 @Component<TotalValueCreated>({
   subscriptions() {
+    const valueToFillRectangle = 100000;
+    function percentageFullOfMoney(tv: ValueCreated) {
+      return Math.floor((tv / valueToFillRectangle) * 100) + "%";
+    }
     return {
       elapsedTime: this.secondsSinceBegin.pipe(map(formatSeconds)),
       money: this.totalValueCreated.pipe(map(formatMoney)),
+      fullOfMoney: this.totalValueCreated.pipe(map(percentageFullOfMoney)),
     };
   },
 })
@@ -65,11 +70,11 @@ rect.money-growing {
   stroke: black;
   fill: url(#here-comes-money);
 }
-.stop1 {
+.stop2 {
   stop-color: black;
   stop-opacity: 0;
 }
-.stop2 {
+.stop1 {
   stop-color: green;
 }
 </style>
