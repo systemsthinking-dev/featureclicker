@@ -1,5 +1,6 @@
 <template>
   <svg x="350" y="50">
+    <line class="flow-of-created-value" x1="150" y1="50" y2="75" x2="325" />
     <circle class="capability-stock" :r="circleRadius" cx="150" cy="50" />
     <text
       class="capability-quantity"
@@ -47,5 +48,10 @@ circle.capability-stock {
 }
 text {
   text-anchor: middle;
+}
+
+.flow-of-created-value {
+  stroke: green;
+  stroke-width: 5px;
 }
 </style>
