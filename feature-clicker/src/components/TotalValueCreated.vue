@@ -11,10 +11,11 @@ import { Observable } from "rxjs";
 import { SecondsSinceBegin, ValueCreated } from "../ImportantFile";
 import { map } from "rxjs/operators";
 
+function padTo2Digits(n: number): string {
+  return n < 10 ? "0" + n : "" + n;
+}
+
 export function formatSeconds(allTheSeconds: number): string {
-  function padTo2Digits(n: number): string {
-    return n < 10 ? "0" + n : "" + n;
-  }
   const hours = Math.floor(allTheSeconds / (60 * 60));
   const minutes = Math.floor((allTheSeconds % (60 * 60)) / 60);
   const seconds = allTheSeconds % 60;
@@ -25,11 +26,17 @@ export function formatSeconds(allTheSeconds: number): string {
   );
 }
 
+function formatMoney(valueCreated: ValueCreated) {
+  const dollars = Math.floor(valueCreated / 100);
+  const cents = valueCreated % 100;
+  return "$" + dollars + "." + padTo2Digits(cents);
+}
+
 @Component<TotalValueCreated>({
   subscriptions() {
     return {
       elapsedTime: this.secondsSinceBegin.pipe(map(formatSeconds)),
-      money: this.totalValueCreated,
+      money: this.totalValueCreated.pipe(map(formatMoney)),
     };
   },
 })
