@@ -1,5 +1,6 @@
 <template>
   <svg>
+    <line x1="230" y1="100" x2="500" y2="100" stroke="black" />
     <circle
       v-for="dot in theWork"
       :key="dot.timestamp"
