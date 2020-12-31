@@ -44,5 +44,17 @@ export default class App extends Vue {
 .stdev-logo {
   width: 20%;
   margin: 20px;
+  background-color: white;
+  padding: 10px;
+}
+
+body {
+  background: rgb(0, 212, 255);
+  background: linear-gradient(
+    90deg,
+    rgba(0, 212, 255, 1) 0%,
+    rgba(225, 236, 245, 1) 50%,
+    rgba(0, 212, 255, 1) 100%
+  );
 }
 </style>

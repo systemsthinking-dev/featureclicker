@@ -1,6 +1,6 @@
 <template>
   <main class="hello">
-    {{ msg }}
+    <h1>{{ msg }}</h1>
     <svg class="yo" width="800" height="400">
       Feature Clicker Goes Here
       <DoFeatureWork :doWork="importantThings.featureWorkDone" />
@@ -37,6 +37,7 @@ svg.yo {
   margin-top: 20px;
   width: 800px;
   height: 400px;
+  background-color: white;
 }
 
 h3 {
