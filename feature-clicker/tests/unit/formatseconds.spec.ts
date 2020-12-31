@@ -3,6 +3,7 @@
 import { assert, expect } from "chai";
 
 function formatSeconds(seconds: number): string {
+  function padTo2Digits() { }
   const hours = Math.floor(seconds / (60 * 60));
   const minutes = Math.floor((seconds % (60 * 60)) / 60);
   const prettyMinutes = minutes < 10 ? "0" + minutes : minutes;
