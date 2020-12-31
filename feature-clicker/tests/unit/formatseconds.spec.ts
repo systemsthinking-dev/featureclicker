@@ -5,9 +5,10 @@ import { assert, expect } from "chai";
 function formatSeconds(seconds: number): string {
   const hours = Math.floor(seconds / (60 * 60));
   const minutes = Math.floor((seconds % (60 * 60)) / 60);
+  const prettyMinutes = minutes < 10 ? "0" + minutes : minutes;
   const onlySeconds = seconds % 60;
   const prettySeconds = onlySeconds < 10 ? "0" + onlySeconds : onlySeconds;
-  return (hours ? hours + ":" : "") + minutes + ":" + prettySeconds;
+  return (hours ? hours + ":" + prettyMinutes : minutes) + ":" + prettySeconds;
 }
 
 describe("formatSeconds looks nice", () => {
@@ -26,6 +27,11 @@ describe("formatSeconds looks nice", () => {
 
   it("shows 1:10:00 for an hour and ten minutes", () => {
     expect(formatSeconds(60 * 60 + 600)).to.be.equal("1:10:00");
+  })
+
+
+  it("shows 1:01:00 for an hour and one minute", () => {
+    expect(formatSeconds(60 * 60 + 60)).to.be.equal("1:01:00");
   })
 
 
