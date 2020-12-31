@@ -16,7 +16,7 @@
       <stop offset="100%" stop-color="rgba(255, 255, 255, 1) " />
     </radialGradient>
     <circle
-      v-stream:click="doWork"
+      v-stream:click.prevent="doWork"
       class="feature-work"
       cx="230"
       cy="100"
