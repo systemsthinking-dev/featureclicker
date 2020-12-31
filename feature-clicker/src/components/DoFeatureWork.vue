@@ -20,6 +20,10 @@
       cy="100"
       r="5"
     />
+    <text x="230" y="100" font-size="30" text-anchor="middle" fill="white">
+      <tspan>Click</tspan>
+      <tspan x="230" dy="1.2em">Here</tspan>
+    </text>
   </svg>
 </template>
 
