@@ -48,6 +48,7 @@ circle.capability-stock {
 }
 text {
   text-anchor: middle;
+  user-select: none;
 }
 
 .flow-of-created-value {
