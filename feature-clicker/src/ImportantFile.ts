@@ -1,5 +1,5 @@
 
-import { Subject, BehaviorSubject, Observable } from "rxjs";
+import { Subject, BehaviorSubject, Observable, timer } from "rxjs";
 import { scan, delay } from "rxjs/operators";
 
 console.log("Does this happen?");
@@ -11,6 +11,7 @@ export class ImportantThings {
   constructor() {
     this.featureWorkDone = new Subject<ClickOnFeatureWork>();
     this.capabilityStock = new BehaviorSubject<number>(0);
+    this.secondsSinceBegin = timer(1000, 1000); // really I want it to start on the first click
 
     const thing: Observable<number> = this.featureWorkDone.pipe(
       scan(countSoFar => countSoFar + 1, 0),
@@ -23,6 +24,8 @@ export class ImportantThings {
   public featureWorkDone: Subject<ClickOnFeatureWork>;
 
   public capabilityStock: BehaviorSubject<number>;
+
+  public secondsSinceBegin: Observable<SecondsSinceBegin>;
 }
 
 export const importantThings = new ImportantThings();

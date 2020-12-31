@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <HelloWorld :msg="thinger" :importantThings="importantThings" />
+    <HelloWorld :importantThings="importantThings" />
     <a href="https://systemsthinking.dev" target="_blank">
       <img
         alt="SystemsThinking.dev logo"

@@ -5,7 +5,9 @@
       Feature Clicker Goes Here
       <DoFeatureWork :doWork="importantThings.featureWorkDone" />
       <capability-stock :quantityObservable="importantThings.capabilityStock" />
-      <total-value-created />
+      <total-value-created
+        :secondsSinceBegin="importantThings.secondsSinceBegin"
+      />
     </svg>
   </main>
 </template>
