@@ -1,6 +1,6 @@
 
 import { Subject, BehaviorSubject, Observable, timer } from "rxjs";
-import { scan, delay, first, mergeMap } from "rxjs/operators";
+import { scan, delay, first, mergeMap, startWith } from "rxjs/operators";
 
 console.log("Does this happen?");
 
@@ -11,7 +11,10 @@ export class ImportantThings {
   constructor() {
     this.featureWorkDone = new Subject<ClickOnFeatureWork>();
     this.capabilityStock = new BehaviorSubject<number>(0);
-    this.secondsSinceBegin = this.featureWorkDone.pipe(first(), mergeMap(_t => timer(1000, 1000))); // start on the first click
+    this.secondsSinceBegin = this.featureWorkDone.pipe(
+      first(),
+      mergeMap(_t => timer(0, 1000)),
+      startWith(0)); // start on the first click
 
     const thing: Observable<number> = this.featureWorkDone.pipe(
       scan(countSoFar => countSoFar + 1, 0),
