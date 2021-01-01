@@ -1,8 +1,10 @@
 <template>
   <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="102.54"
-    height="48.18"
+    :x="x"
+    :y="y"
+    class="dollars"
+    width="51"
+    height="24"
     viewBox="0 0 102.54 48.18"
   >
     <path
@@ -63,8 +65,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
-export default class OneThousandDollars extends Vue {}
+export default class OneThousandDollars extends Vue {
+  @Prop({ required: true }) private x!: number;
+  @Prop({ required: true }) private y!: number;
+}
 </script>
+
+<style scoped>
+svg.dollars {
+  width: 51px;
+  height: 24px;
+}
+</style>
