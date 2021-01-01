@@ -7,6 +7,7 @@
       <stop class="stop2" :offset="whiffOfMoney" />
     </linearGradient>
     <rect class="money-growing" x="75" width="50" y="60" height="300" />
+    <one-thousand-dollars />
   </svg>
 </template>
 
@@ -15,6 +16,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { Observable } from "rxjs";
 import { SecondsSinceBegin, ValueCreated } from "../ImportantFile";
 import { map } from "rxjs/operators";
+import OneThousandDollars from "./OneThousandDollars.vue";
 
 function padTo2Digits(n: number): string {
   return n < 10 ? "0" + n : "" + n;
@@ -38,6 +40,9 @@ function formatMoney(valueCreated: ValueCreated) {
 }
 
 @Component<TotalValueCreated>({
+  components: {
+    OneThousandDollars,
+  },
   subscriptions() {
     const valueToFillRectangle = 100000; // $1,000.00
     function percentageFullOfMoney(tv: ValueCreated) {
