@@ -1,7 +1,12 @@
 <template>
   <svg>
-    <hundred-dollar-bill x="135" y="336" />
-    <hundred-dollar-bill x="135" y="331" bottom="true" />
+    <hundred-dollar-bill
+      v-for="n in parseInt(quantity)"
+      :key="'bill' + n"
+      x="135"
+      :y="heightOfBill(n)"
+      :bottom="n === 1"
+    />
   </svg>
 </template>
 
@@ -14,5 +19,10 @@ import HundredDollarBill from "./HundredDollarBill.vue";
 })
 export default class StackOfBills extends Vue {
   @Prop({ required: true }) private quantity!: number;
+
+  private heightOfBill(n: number) {
+    console.log("Calculating height for n = " + n);
+    return 341 - n * 5;
+  }
 }
 </script>
