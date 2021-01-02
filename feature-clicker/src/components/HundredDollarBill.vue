@@ -59,4 +59,7 @@ svg.dollars {
   width: 51px;
   height: 24px;
 }
+text {
+  user-select: none;
+}
 </style>
