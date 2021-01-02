@@ -12,5 +12,7 @@ import HundredDollarBill from "./HundredDollarBill.vue";
 @Component({
   components: { HundredDollarBill },
 })
-export default class StackOfBills extends Vue {}
+export default class StackOfBills extends Vue {
+  @Prop({ required: true }) private quantity!: number;
+}
 </script>

@@ -7,7 +7,7 @@
       <stop class="stop2" :offset="whiffOfMoney" />
     </linearGradient>
     <rect class="money-growing" x="75" width="50" y="60" height="300" />
-    <stack-of-bills />
+    <stack-of-bills quantity="2" />
   </svg>
 </template>
 
