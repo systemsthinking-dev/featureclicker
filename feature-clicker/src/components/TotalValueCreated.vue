@@ -45,11 +45,14 @@ function formatMoney(valueCreated: ValueCreated) {
   },
   subscriptions() {
     const valueToFillRectangle = 10000; // $100.00
+    function percentComplete(tv: ValueCreated) {
+      return ((tv % valueToFillRectangle) / valueToFillRectangle) * 100;
+    }
     function percentageFullOfMoney(tv: ValueCreated) {
-      return Math.max(0, (tv / valueToFillRectangle) * 100 - 2.5) + "%";
+      return Math.max(0, percentComplete(tv) - 2.5) + "%";
     }
     function percentageSniffingMoney(tv: ValueCreated) {
-      return Math.min(100, (tv / valueToFillRectangle) * 100 + 2.5) + "%";
+      return Math.min(100, percentComplete(tv) + 2.5) + "%";
     }
     return {
       elapsedTime: this.secondsSinceBegin.pipe(map(formatSeconds)),
