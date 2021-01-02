@@ -18,8 +18,9 @@ export class ImportantThings {
       mergeMap(_t => timer(0, 1000)), // start emitting numbers every second
       startWith(0)); // before that, be 0
 
+    const valueOfEachClick = 1;
     const workFlowingIntoCapabilities: Observable<number> = this.featureWorkDone.pipe(
-      scan(countSoFar => countSoFar + 1, 0),
+      scan(countSoFar => countSoFar + valueOfEachClick, 0),
       delay(2000)
     );
 
