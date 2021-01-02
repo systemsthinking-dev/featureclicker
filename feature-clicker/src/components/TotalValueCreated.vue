@@ -3,10 +3,30 @@
     <text x="100" y="20">Total Value Created</text>
     <text x="100" y="40">{{ money }}</text>
     <linearGradient id="here-comes-money" x1="0" x2="0" y1="1" y2="0">
-      <stop class="stop1" :offset="fullOfMoney" />
-      <stop class="stop2" :offset="whiffOfMoney" />
+      <stop class="stop1" offset="0%" />
+      <stop class="stop2" offset="5%" />
     </linearGradient>
-    <rect class="money-growing" x="75" width="50" y="60" height="300" />
+    <rect
+      class="money-growing"
+      x="75"
+      width="50"
+      y="60"
+      :height="totalHeight"
+    />
+    <rect
+      class="money-growing-upper"
+      x="75"
+      width="50"
+      y="60"
+      :height="unfilledHeight"
+    />
+    <rect
+      class="money-growing-outline"
+      x="75"
+      width="50"
+      y="60"
+      :height="totalHeight"
+    />
     <stack-of-bills :quantity="quantityOfBills" />
   </svg>
 </template>
@@ -57,11 +77,19 @@ function formatMoney(valueCreated: ValueCreated) {
     function numberOfBills(tv: ValueCreated) {
       return Math.floor(tv / valueToFillRectangle);
     }
+    const totalHeight = this.totalHeight;
+    function heightIncomplete(tv: ValueCreated) {
+      return (
+        totalHeight -
+        ((tv % valueToFillRectangle) / valueToFillRectangle) * totalHeight
+      );
+    }
     return {
       elapsedTime: this.secondsSinceBegin.pipe(map(formatSeconds)),
       money: this.totalValueCreated.pipe(map(formatMoney)),
-      fullOfMoney: this.totalValueCreated.pipe(map(percentageFullOfMoney)),
-      whiffOfMoney: this.totalValueCreated.pipe(map(percentageSniffingMoney)),
+      unfilledHeight: this.totalValueCreated.pipe(map(heightIncomplete)),
+      // fullOfMoney: this.totalValueCreated.pipe(map(percentageFullOfMoney)),
+      // whiffOfMoney: this.totalValueCreated.pipe(map(percentageSniffingMoney)),
       quantityOfBills: this.totalValueCreated.pipe(map(numberOfBills)),
     };
   },
@@ -74,6 +102,8 @@ export default class TotalValueCreated extends Vue {
   private totalValueCreated!: Observable<ValueCreated>;
 
   private elapsedTime!: Observable<number>;
+
+  private totalHeight = 300;
 }
 </script>
 
@@ -84,12 +114,18 @@ text {
   user-select: none;
 }
 rect.money-growing {
-  stroke: black;
+  fill: green;
+}
+rect.money-growing-upper {
   fill: url(#here-comes-money);
+  transition: 1s linear;
+}
+rect.money-growing-outline {
+  stroke: black;
+  fill: none;
 }
 .stop2 {
-  stop-color: black;
-  stop-opacity: 0;
+  stop-color: white;
 }
 .stop1 {
   stop-color: green;
