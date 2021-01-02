@@ -7,7 +7,7 @@
       <stop class="stop2" :offset="whiffOfMoney" />
     </linearGradient>
     <rect class="money-growing" x="75" width="50" y="60" height="300" />
-    <stack-of-bills quantity="4" />
+    <stack-of-bills :quantity="quantityOfBills" />
   </svg>
 </template>
 
@@ -54,11 +54,15 @@ function formatMoney(valueCreated: ValueCreated) {
     function percentageSniffingMoney(tv: ValueCreated) {
       return Math.min(100, percentComplete(tv) + 2.5) + "%";
     }
+    function numberOfBills(tv: ValueCreated) {
+      return Math.floor(tv / valueToFillRectangle);
+    }
     return {
       elapsedTime: this.secondsSinceBegin.pipe(map(formatSeconds)),
       money: this.totalValueCreated.pipe(map(formatMoney)),
       fullOfMoney: this.totalValueCreated.pipe(map(percentageFullOfMoney)),
       whiffOfMoney: this.totalValueCreated.pipe(map(percentageSniffingMoney)),
+      quantityOfBills: this.totalValueCreated.pipe(map(numberOfBills)),
     };
   },
 })
