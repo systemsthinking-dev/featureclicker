@@ -44,7 +44,7 @@ function formatMoney(valueCreated: ValueCreated) {
     StackOfBills,
   },
   subscriptions() {
-    const valueToFillRectangle = 100000; // $1,000.00
+    const valueToFillRectangle = 10000; // $100.00
     function percentageFullOfMoney(tv: ValueCreated) {
       return Math.max(0, (tv / valueToFillRectangle) * 100 - 2.5) + "%";
     }
