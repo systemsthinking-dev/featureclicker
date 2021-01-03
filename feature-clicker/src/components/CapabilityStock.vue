@@ -1,16 +1,16 @@
 <template>
-  <svg x="350" y="50">
-    <line class="flow-of-created-value" x1="150" y1="50" y2="75" x2="325" />
-    <circle class="capability-stock" :r="circleRadius" cx="150" cy="50" />
+  <svg x="350" y="10">
+    <line class="flow-of-created-value" x1="150" y1="90" y2="115" x2="325" />
+    <circle class="capability-stock" :r="circleRadius" cx="150" cy="90" />
     <text
       class="capability-quantity"
       alignment-baseline="middle"
       x="150"
-      y="50"
+      y="90"
     >
       {{ quantity }}
     </text>
-    <text class="vps" x="150" y="70">value per second</text>
+    <text class="vps" x="150" y="110">value per second</text>
   </svg>
 </template>
 
