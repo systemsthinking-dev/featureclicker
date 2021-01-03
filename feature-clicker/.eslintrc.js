@@ -21,7 +21,8 @@ module.exports = {
       allowTemplateLiterals: true
     }],
     "comma-dangle": ["error", "only-multiline"],
-    "@typescript-eslint/ban-ts-ignore": "off"
+    "@typescript-eslint/ban-ts-ignore": "off",
+    camelcase: "off"
   },
   overrides: [
     {

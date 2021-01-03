@@ -2,7 +2,7 @@ import { assert, expect } from "chai";
 import { shallowMount } from "@vue/test-utils";
 import HelloWorld from "@/components/HelloWorld.vue";
 import DoFeatureWork from "@/components/DoFeatureWork.vue";
-import { fakeIndividualWork } from "@/IndividualWork";
+import { fakeIndividualWork } from "@/system/IndividualWork";
 import { Subject } from "rxjs";
 
 describe("HelloWorld.vue", () => {
