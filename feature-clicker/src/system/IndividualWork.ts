@@ -1,7 +1,8 @@
 
 import { Subject, BehaviorSubject, Observable, timer, of, ReplaySubject } from "rxjs";
-import { scan, delay, first, mergeMap, startWith, withLatestFrom, map, filter, catchError } from "rxjs/operators";
+import { scan, delay, first, mergeMap, startWith, withLatestFrom, map, filter, catchError, take } from "rxjs/operators";
 import type { Individual_within_Team } from "./Individual_within_Team";
+import type { StatusReport } from "./TeamSystem";
 
 console.log("Does this happen?");
 
@@ -32,6 +33,13 @@ export class IndividualWork {
       this.secondsSinceBegin.pipe(withLatestFrom(this.capabilityStock), map(([_tick, vps]) => vps));
 
     valueFlowingFromCapabilities.pipe(scan((accum, moreValue) => accum + moreValue, 0)).subscribe(this.totalValueCreated);
+
+    const statusReports = new Subject<StatusReport>();
+    teamRelationship.hookUpIndividual({
+      statusReports
+    });
+    // send the hello statusreport
+    statusReports.next({ tick: 0, vps: 0 });
   }
 
   public featureWorkDone: Subject<ClickOnFeatureWork>;

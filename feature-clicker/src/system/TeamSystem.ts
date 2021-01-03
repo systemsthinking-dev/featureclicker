@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Observable, of, ReplaySubject, Subject } from "rxjs";
 import type { ValuePerSecond, SecondsSinceBegin } from "./IndividualWork";
 import { webSocket } from "rxjs/webSocket";
@@ -96,6 +97,10 @@ export class TeamSystem {
       return accum;
     }, [] as Array<TeamMemberScore>)
     );
+
+    individualRelationship.hookUpTeam({
+      outgoingStatusReports: eventsTo,
+    });
   }
 
   private teamMemberId: string;

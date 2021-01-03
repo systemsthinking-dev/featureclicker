@@ -2,6 +2,7 @@
   <svg x="600" y="10" height="100%">
     <text x="100" y="20">Total Value Created</text>
     <text x="100" y="40">{{ money }}</text>
+    <text x="100" y="60" class="elapsed-time">{{ elapsedTime }}</text>
     <linearGradient id="here-comes-money" x1="0" x2="0" y1="1" y2="0">
       <stop class="stop1" offset="0%" />
       <stop class="stop2" offset="5%" />
@@ -129,5 +130,8 @@ rect.money-growing-outline {
 }
 .stop1 {
   stop-color: green;
+}
+.elapsed-time {
+  display: none;
 }
 </style>
