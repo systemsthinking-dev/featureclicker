@@ -7,12 +7,11 @@ import { v4 as uuid } from "uuid";
 export type TeamMemberScore = { teamMemberId: TeamMemberId; name: TeamMemberName; vps: ValuePerSecond }
 export type TeamMemberName = string;
 export type TeamMemberId = string;
-export type MyEvent = { vps: ValuePerSecond } // temporary
+export type MyEvent = { tick: SecondsSinceBegin, vps: ValuePerSecond } // temporary
 export type TeamEvent = {
   from: {
     teamMemberId: TeamMemberId;
     teamMemberName: TeamMemberName;
-    tick: SecondsSinceBegin;
   }; about: MyEvent;
 } // what we receive
 export type MessageToEveryone = {
@@ -22,7 +21,7 @@ export type MessageToEveryone = {
 
 function isTeamEvent(tore: TeamEvent | MessageToEveryone): tore is TeamEvent {
   const te = tore as TeamEvent;
-  return !!te.from && !!te.from.teamMemberId && (te.from.tick !== undefined);
+  return !!te.from && !!te.from.teamMemberId;
 }
 
 const yourName = of("Fred"); // TODO: Wire up an input
@@ -36,8 +35,7 @@ const yourName = of("Fred"); // TODO: Wire up an input
  */
 function wireUpTheWebsocket(websocketSubject: Subject<TeamEvent | MessageToEveryone>,
   teamMemberId: TeamMemberId,
-  yourName: Observable<TeamMemberName>,
-  secondsSinceBegin: Observable<SecondsSinceBegin>): [Observable<TeamEvent>, Subject<MyEvent>] {
+  yourName: Observable<TeamMemberName>): [Observable<TeamEvent>, Subject<MyEvent>] {
   const selfSubject = new ReplaySubject<MessageToEveryone>(1);
   const selfObservable: Observable<TeamEvent> = selfSubject.pipe(map(mte => JSON.parse(mte.data)));
 
@@ -51,8 +49,8 @@ function wireUpTheWebsocket(websocketSubject: Subject<TeamEvent | MessageToEvery
 
   // any event in the myEvents stream gets sent to the server along with metadata.
   // someday, break this websocket stuff into a different file. it is not core domain, only supporting
-  eventsTo.pipe(withLatestFrom(secondsSinceBegin, yourName),
-    map(([myEvent, tick, yourName]) => ({ from: { teamMemberId, teamMemberName: yourName, tick }, about: myEvent })))
+  eventsTo.pipe(withLatestFrom(yourName),
+    map(([myEvent, yourName]) => ({ from: { teamMemberId, teamMemberName: yourName }, about: myEvent })))
     .subscribe((myTeamEvent: TeamEvent) => {
       const mfe: MessageToEveryone = {
         action: "sendmessage",
@@ -86,8 +84,7 @@ export class TeamSystem {
     );
 
     const [eventsFromServer, eventsTo] = wireUpTheWebsocket(websocketSubject,
-      this.teamMemberId, yourName,
-      this.secondsSinceBegin);
+      this.teamMemberId, yourName);
     this.eventsFromServer = eventsFromServer;
     this.sendToServer = (event: MyEvent) => {
       eventsTo.next(event);
