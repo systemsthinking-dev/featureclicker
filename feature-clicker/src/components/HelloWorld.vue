@@ -1,6 +1,7 @@
 <template>
   <main class="hello">
     <h1>{{ msg }}</h1>
+    <TeamBoard />
     <svg class="yo" width="800" height="400">
       Feature Clicker Goes Here
       <DoFeatureWork :doWork="importantThings.featureWorkDone" />
@@ -19,12 +20,14 @@ import { ImportantThings } from "../ImportantFile";
 import DoFeatureWork from "./DoFeatureWork.vue";
 import CapabilityStock from "./CapabilityStock.vue";
 import TotalValueCreated from "./TotalValueCreated.vue";
+import TeamBoard from "./TeamBoard.vue";
 
 @Component({
   components: {
     DoFeatureWork,
     CapabilityStock,
     TotalValueCreated,
+    TeamBoard,
   },
 })
 export default class HelloWorld extends Vue {

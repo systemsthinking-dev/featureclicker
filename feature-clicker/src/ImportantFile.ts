@@ -49,6 +49,7 @@ export class ImportantThings {
     this.myEvents = new Subject<MyEvent>();
 
     // any event in the myEvents stream gets sent to the server along with metadata.
+    // someday, break this websocket stuff into a different file. it is not core domain, only supporting
     this.myEvents.pipe(withLatestFrom(this.secondsSinceBegin),
       map(([myEvent, tick]) => ({ from: { teamMemberId, tick }, about: myEvent })))
       .subscribe(myTeamEvent => {
