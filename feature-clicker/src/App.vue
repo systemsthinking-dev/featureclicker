@@ -22,6 +22,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import HelloWorld from "./components/HelloWorld.vue";
 import { IndividualWork, TeamEvent, MessageToEveryone } from "./IndividualWork";
+import { TeamSystem } from "./system/TeamSystem";
 import VueRx from "vue-rx";
 import { webSocket } from "rxjs/webSocket";
 import { Subject } from "rxjs";
@@ -43,7 +44,9 @@ websocketSubject.subscribe((m) =>
   console.log("Received from websocket: " + JSON.stringify(m))
 );
 
-const individualWork = new IndividualWork(websocketSubject, uuid());
+const whoami = uuid();
+const individualWork = new IndividualWork(websocketSubject, whoami);
+const teamSystem = new TeamSystem();
 
 // @ts-ignore
 window.things = individualWork; // to play in the console
