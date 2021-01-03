@@ -30,20 +30,14 @@ import { v4 as uuid } from "uuid";
 Vue.use(VueRx);
 
 // set up the websockets
-const backendUrl = process.env.VUE_APP_BACKEND;
+const backendUrl = process.env.VUE_APP_BACKEND + "poo";
 console.log("The backend is at: " + backendUrl);
 
 let websocketSubject: Subject<TeamEvent | MessageToEveryone>;
-try {
-  websocketSubject = webSocket(backendUrl);
-  websocketSubject.subscribe((m) =>
-    console.log("Received from websocket: " + JSON.stringify(m))
-  );
-  console.log("Well, maybe we have subscribed");
-} catch (e) {
-  console.log("here is the e: " + e);
-  websocketSubject = new Subject<TeamEvent | MessageToEveryone>();
-}
+websocketSubject = webSocket(backendUrl);
+websocketSubject.subscribe((m) =>
+  console.log("Received from websocket: " + JSON.stringify(m))
+);
 
 const importantThings = new ImportantThings(websocketSubject, uuid());
 
