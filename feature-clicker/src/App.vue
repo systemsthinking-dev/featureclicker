@@ -21,7 +21,11 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import HelloWorld from "./components/HelloWorld.vue";
-import { IndividualWork, TeamEvent, MessageToEveryone } from "./IndividualWork";
+import {
+  IndividualWork,
+  TeamEvent,
+  MessageToEveryone,
+} from "./system/IndividualWork";
 import { TeamSystem } from "./system/TeamSystem";
 import VueRx from "vue-rx";
 import { webSocket } from "rxjs/webSocket";

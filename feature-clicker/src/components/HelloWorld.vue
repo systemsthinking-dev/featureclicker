@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { IndividualWork } from "../IndividualWork";
+import { IndividualWork } from "../system/IndividualWork";
 import DoFeatureWork from "./DoFeatureWork.vue";
 import CapabilityStock from "./CapabilityStock.vue";
 import TotalValueCreated from "./TotalValueCreated.vue";
