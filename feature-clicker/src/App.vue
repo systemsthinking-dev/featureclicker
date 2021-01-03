@@ -30,7 +30,6 @@ import { TeamSystem } from "./system/TeamSystem";
 import VueRx from "vue-rx";
 import { webSocket } from "rxjs/webSocket";
 import { Subject } from "rxjs";
-import { v4 as uuid } from "uuid";
 
 Vue.use(VueRx);
 
@@ -38,19 +37,8 @@ Vue.use(VueRx);
 const backendUrl = process.env.VUE_APP_BACKEND;
 console.log("The backend is at: " + backendUrl);
 
-const websocketSubject: Subject<TeamEvent | MessageToEveryone> = webSocket(
-  backendUrl
-);
-
-// this is for debugging. However there is always a chance that removing
-// it will change behavior: it's the first subscribe that triggers connection.
-websocketSubject.subscribe((m) =>
-  console.log("Received from websocket: " + JSON.stringify(m))
-);
-
-const whoami = uuid();
-const individualWork = new IndividualWork(websocketSubject, whoami);
-const teamSystem = new TeamSystem();
+const individualWork = new IndividualWork();
+const teamSystem = new TeamSystem(backendUrl);
 
 // @ts-ignore
 window.things = individualWork; // to play in the console
