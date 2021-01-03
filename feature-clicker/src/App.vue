@@ -30,7 +30,7 @@ import { v4 as uuid } from "uuid";
 Vue.use(VueRx);
 
 // set up the websockets
-const backendUrl = process.env.VUE_APP_BACKEND + "poo";
+const backendUrl = process.env.VUE_APP_BACKEND;
 console.log("The backend is at: " + backendUrl);
 
 const websocketSubject: Subject<TeamEvent | MessageToEveryone> = webSocket(
