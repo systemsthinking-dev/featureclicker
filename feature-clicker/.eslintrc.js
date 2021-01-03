@@ -22,7 +22,7 @@ module.exports = {
     }],
     "comma-dangle": ["error", "only-multiline"],
     "@typescript-eslint/ban-ts-ignore": "off",
-    "camelcase": "off"
+    camelcase: "off"
   },
   overrides: [
     {
