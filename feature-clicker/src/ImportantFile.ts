@@ -41,7 +41,7 @@ const yourName = of("Fred"); // TODO: Wire up an input
 function wireUpTheWebsocket(websocketSubject: Subject<TeamEvent | MessageToEveryone>,
   teamMemberId: TeamMemberId,
   yourName: Observable<TeamMemberName>,
-  secondsSinceBegin: Observable<SecondsSinceBegin>): [Observable<TeamEvent>, (sendThis: MyEvent) => void] {
+  secondsSinceBegin: Observable<SecondsSinceBegin>): [Observable<TeamEvent>, Subject<MyEvent>] {
   const selfSubject = new ReplaySubject<MessageToEveryone>(1);
   const selfObservable: Observable<TeamEvent> = selfSubject.pipe(map(mte => JSON.parse(mte.data)));
 
@@ -71,11 +71,7 @@ function wireUpTheWebsocket(websocketSubject: Subject<TeamEvent | MessageToEvery
       selfSubject.next(mfe);
     });
 
-  function sendToServer(event: MyEvent) {
-    eventsTo.next(event);
-  }
-
-  return [eventsFrom, sendToServer];
+  return [eventsFrom, eventsTo];
 }
 
 export class ImportantThings {
@@ -89,7 +85,8 @@ export class ImportantThings {
       mergeMap(_t => timer(0, 1000)), // start emitting numbers every second
       startWith(0)); // before that, be 0
 
-    [this.eventsFromServer, this.sendToServer] = wireUpTheWebsocket(websocketSubject, teamMemberId, yourName, this.secondsSinceBegin);
+    const [eventsFromServer, eventsTo] = wireUpTheWebsocket(websocketSubject, teamMemberId, yourName, this.secondsSinceBegin);
+    this.eventsFromServer = eventsFromServer;
 
     this.teamScores = this.eventsFromServer.pipe(scan((accum, e) => {
       console.log("I see an event: ", e);
@@ -111,7 +108,11 @@ export class ImportantThings {
 
     valueFlowingFromCapabilities.pipe(scan((accum, moreValue) => accum + moreValue, 0)).subscribe(this.totalValueCreated);
 
-    this.sendToServer({ vps: 0 });
+    this.sendToServer = (event: MyEvent) => {
+      eventsTo.next(event);
+    };
+
+    // Next: hook up capabilityStock to send an event every 5s
   }
 
   sendToServer: (event: MyEvent) => void;
@@ -120,7 +121,7 @@ export class ImportantThings {
 
   public featureWorkDone: Subject<ClickOnFeatureWork>;
 
-  public capabilityStock: BehaviorSubject<number>; // TODO: I think all these should be exposed as Observable
+  public capabilityStock: BehaviorSubject<ValuePerSecond>; // TODO: I think all these should be exposed as Observable
 
   public secondsSinceBegin: Observable<SecondsSinceBegin>;
 
