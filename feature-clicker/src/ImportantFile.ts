@@ -7,7 +7,9 @@ console.log("Does this happen?");
 export type ClickOnFeatureWork = { event: Event };
 export type SecondsSinceBegin = number;
 export type ValueCreated = number;
+export type ValuePerSecond = number;
 
+export type TeamMemberScore = { teamMemberId: TeamMemberId; name: TeamMemberName; vps: ValuePerSecond }
 export type TeamMemberName = string;
 export type TeamMemberId = string;
 export type MyEvent = { stuff: string } // temporary
@@ -25,7 +27,7 @@ export class ImportantThings {
   constructor(private websocketSubject: Subject<TeamEvent | MessageToEveryone>,
     public teamMemberId: TeamMemberId) {
     this.featureWorkDone = new Subject<ClickOnFeatureWork>();
-    this.capabilityStock = new BehaviorSubject<number>(0);
+    this.capabilityStock = new BehaviorSubject<ValuePerSecond>(0);
     this.totalValueCreated = new BehaviorSubject<ValueCreated>(0);
     this.eventsFromServer = websocketSubject.pipe(filter(isTeamEvent)); // does that count as subscribing?
     this.secondsSinceBegin = this.featureWorkDone.pipe(

@@ -11,7 +11,8 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { of } from "rxjs";
+import { of, Observable } from "rxjs";
+import { TeamMemberScore } from "@/ImportantFile";
 
 @Component({
   subscriptions() {
@@ -22,6 +23,8 @@ import { of } from "rxjs";
 })
 export default class TeamBoard extends Vue {
   public teamName = "Woozles";
+
+  private teammates!: Observable<TeamMemberScore>;
 }
 </script>
 
