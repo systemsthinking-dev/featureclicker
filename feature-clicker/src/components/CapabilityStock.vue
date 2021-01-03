@@ -1,16 +1,19 @@
 <template>
   <svg x="350" y="10">
+    <text x="150" y="20">value per second</text>
+    <text x="150" y="40">{{ quantity }}</text>
     <line class="flow-of-created-value" x1="150" y1="90" y2="115" x2="325" />
-    <circle class="capability-stock" :r="circleRadius" cx="150" cy="90" />
-    <text
-      class="capability-quantity"
-      alignment-baseline="middle"
-      x="150"
-      y="90"
-    >
-      {{ quantity }}
+    <circle
+      class="capability-stock"
+      :r="circleRadius"
+      cx="150"
+      :cy="circleCenter"
+    />
+
+    <text class="vps" x="150" :y="belowCircle">
+      <tspan>Software</tspan>
+      <tspan x="150" dy="1.2em">Capabilities</tspan>
     </text>
-    <text class="vps" x="150" y="110">value per second</text>
   </svg>
 </template>
 
@@ -21,16 +24,22 @@ import { map } from "rxjs/operators";
 import VueRx from "vue-rx";
 import { importantThings } from "../ImportantFile";
 
+const circleCenter = 90;
+
 @Component<CapabilityStock>({
   subscriptions() {
+    const radius = this.quantityObservable.pipe(map(this.calculateRadius));
     return {
       quantity: this.quantityObservable,
-      circleRadius: this.quantityObservable.pipe(map(this.calculateRadius)),
+      circleRadius: radius,
+      belowCircle: radius.pipe(map((r) => circleCenter + r + 20)),
     };
   },
 })
 export default class CapabilityStock extends Vue {
   @Prop({ required: true }) private quantityObservable!: Observable<number>;
+
+  private circleCenter = circleCenter;
 
   calculateRadius(capabilityQuantity: number): number {
     const coefficient = 1; // later: 1 / Math.PI;
@@ -49,6 +58,9 @@ circle.capability-stock {
 text {
   text-anchor: middle;
   user-select: none;
+}
+.vps {
+  transition-duration: 1s;
 }
 
 .flow-of-created-value {
