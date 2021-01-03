@@ -1,6 +1,7 @@
 <template>
   <svg>
     <rect
+      v-stream:click.prevent="clickingOnButton"
       class="send-status-report"
       x="10"
       y="10"
@@ -12,10 +13,26 @@
 </template>
 
 <script lang=ts>
-import { Component, Vue } from "vue-property-decorator";
-
+import { SendStatusReportPlease } from "@/system/IndividualWork";
+import { Subject, Observer, Observable } from "rxjs";
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { mapTo } from "rxjs/operators";
 @Component
-export default class SendStatusReport extends Vue {}
+export default class SendStatusReport extends Vue {
+  @Prop({ required: true })
+  private sendReport!: Observer<SendStatusReportPlease>;
+
+  constructor() {
+    super();
+    this.clickingOnButton.subscribe((t) => console.log("TPS report triggered"));
+    const tpsReports: Observable<SendStatusReportPlease> = this.clickingOnButton.pipe(
+      mapTo("tps")
+    );
+    tpsReports.subscribe(this.sendReport);
+  }
+
+  private clickingOnButton: Subject<{ event: Event }> = new Subject();
+}
 </script>
 
 <style scoped>

@@ -7,7 +7,7 @@
       :secondsSinceBegin="individualWork.secondsSinceBegin"
       :totalValueCreated="individualWork.totalValueCreated"
     />
-    <send-status-report />
+    <send-status-report :sendReport="individualWork.triggerReport" />
   </svg>
 </template>
 
