@@ -1,6 +1,6 @@
 
 import { Subject, BehaviorSubject, Observable, timer } from "rxjs";
-import { scan, delay, first, mergeMap, startWith, withLatestFrom, map } from "rxjs/operators";
+import { scan, delay, first, mergeMap, startWith, withLatestFrom, map, filter } from "rxjs/operators";
 
 console.log("Does this happen?");
 
@@ -8,11 +8,28 @@ export type ClickOnFeatureWork = { event: Event };
 export type SecondsSinceBegin = number;
 export type ValueCreated = number;
 
+export type TeamMemberName = string;
+export type TeamMemberId = string;
+export type MyEvent = { stuff: string } // temporary
+export type TeamEvent = { from: { teamMemberId: TeamMemberName; tick: SecondsSinceBegin }; about: MyEvent } // what we receive
+export type MessageToEveryone = {
+  message: {
+    action: "sendmessage"; // the backend route
+    data: TeamEvent;
+  };
+} // what we send
+function isTeamEvent(tore: TeamEvent | MessageToEveryone): tore is TeamEvent {
+  const te = tore as TeamEvent;
+  return !!te.from && !!te.from.teamMemberId && (te.from.tick !== undefined);
+}
+
 export class ImportantThings {
-  constructor() {
+  constructor(private websocketSubject: Subject<TeamEvent | MessageToEveryone>,
+    public teamMemberId: TeamMemberId) {
     this.featureWorkDone = new Subject<ClickOnFeatureWork>();
     this.capabilityStock = new BehaviorSubject<number>(0);
     this.totalValueCreated = new BehaviorSubject<ValueCreated>(0);
+    this.eventsFromServer = websocketSubject.pipe(filter(isTeamEvent)); // does that count as subscribing?
     this.secondsSinceBegin = this.featureWorkDone.pipe(
       first(), // on the first click,
       mergeMap(_t => timer(0, 1000)), // start emitting numbers every second
@@ -30,20 +47,43 @@ export class ImportantThings {
       this.secondsSinceBegin.pipe(withLatestFrom(this.capabilityStock), map(([_tick, vps]) => vps));
 
     valueFlowingFromCapabilities.pipe(scan((accum, moreValue) => accum + moreValue, 0)).subscribe(this.totalValueCreated);
+
+    this.myEvents = new Subject<MyEvent>();
+
+    // any event in the myEvents stream gets sent to the server along with metadata.
+    this.myEvents.pipe(withLatestFrom(this.secondsSinceBegin),
+      map(([myEvent, tick]) => ({ from: { teamMemberId, tick }, about: myEvent })))
+      .subscribe(myTeamEvent => {
+        const mfe: MessageToEveryone = {
+          message: {
+            action: "sendmessage",
+            data: myTeamEvent
+          }
+        };
+        console.log("Sending: ", mfe);
+        this.websocketSubject.next(mfe);
+      });
+
+    this.sendToServer({ stuff: "things" });
   }
+
+  private myEvents: Subject<MyEvent>;
+
+  sendToServer(event: MyEvent) {
+    this.myEvents.next(event);
+  }
+
+  public eventsFromServer: Observable<TeamEvent>;
 
   public featureWorkDone: Subject<ClickOnFeatureWork>;
 
-  public capabilityStock: BehaviorSubject<number>;
+  public capabilityStock: BehaviorSubject<number>; // TODO: I think all these should be exposed as Observable
 
   public secondsSinceBegin: Observable<SecondsSinceBegin>;
 
   public totalValueCreated: BehaviorSubject<ValueCreated>;
 }
 
-export const importantThings = new ImportantThings();
+export const fakeImportantThings: ImportantThings = {
 
-// @ts-ignore
-window.things = importantThings;
-
-// importantThings.featureWorkDone.subscribe(stuff => { console.log("Got event at time: " + stuff.event?.timeStamp) });
+} as ImportantThings;

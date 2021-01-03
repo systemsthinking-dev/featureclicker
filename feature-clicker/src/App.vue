@@ -21,14 +21,33 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import HelloWorld from "./components/HelloWorld.vue";
-import { importantThings } from "./ImportantFile";
+import { ImportantThings, TeamEvent, MessageToEveryone } from "./ImportantFile";
 import VueRx from "vue-rx";
+import { webSocket, WebSocketSubject } from "rxjs/webSocket";
+import { Subject } from "rxjs";
+import { v4 as uuid } from "uuid";
 
 Vue.use(VueRx);
 
 // set up the websockets
 const backendUrl = process.env.VUE_APP_BACKEND;
 console.log("The backend is at: " + backendUrl);
+
+let websocketSubject: Subject<TeamEvent | MessageToEveryone>;
+try {
+  websocketSubject = webSocket(backendUrl);
+  websocketSubject.subscribe((m) =>
+    console.log("Received from websocket: " + JSON.stringify(m))
+  );
+} catch (e) {
+  console.log("here is the e: " + e);
+  websocketSubject = new Subject<TeamEvent | MessageToEveryone>();
+}
+
+const importantThings = new ImportantThings(websocketSubject, uuid());
+
+// @ts-ignore
+window.things = importantThings; // to play in the console
 
 @Component({
   components: {

@@ -22,7 +22,6 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import VueRx from "vue-rx";
-import { importantThings } from "../ImportantFile";
 
 const circleCenter = 90;
 

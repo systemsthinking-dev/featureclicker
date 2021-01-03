@@ -6,6 +6,8 @@ What could be more fun than work? Pretend work!
 
 ## errata
 
+backend is from: https://github.com/aws-samples/simple-websockets-chat-app
+
 Jess, you put the backend in aws and retrieved its URL using:
 ```
 aws cloudformation describe-stacks \
@@ -14,3 +16,14 @@ aws cloudformation describe-stacks \
 after an `aws configure`
 
 Then you put that wss:// URL as VUE_APP_BACKEND in feature-clicker/.env, which is in .gitignore
+
+You can try it:
+
+```
+npm i -g wscat
+$ wscat -c $URL
+Connected (press CTRL+C to quit)
+> { "action":"sendmessage", "data": "poo" }
+< poo
+> ...
+```

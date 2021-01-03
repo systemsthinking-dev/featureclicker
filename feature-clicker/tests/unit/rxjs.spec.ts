@@ -1,7 +1,5 @@
 import { Subject, Observable } from "rxjs";
-import { TestScheduler } from "rxjs/testing";
 import { expect } from "chai";
-import { throttleTime } from "rxjs/operators";
 import { allRecent, Timestamped } from "@/TryThis";
 import * as fc from "fast-check";
 import { sortBy, last } from "lodash";
