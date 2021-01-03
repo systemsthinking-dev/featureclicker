@@ -4,7 +4,7 @@
  * this is an edge. Settling for underscores.
  */
 
-import { Observable, Observer, ReplaySubject, Subject } from "rxjs";
+import { Observable, Observer, ReplaySubject } from "rxjs";
 import { StatusReport } from "./TeamSystem";
 
 export type IndividualInterface = {
@@ -16,7 +16,7 @@ export type TeamInterface = {
 }
 
 export class Individual_within_Team {
-  public statusReportSubject = new ReplaySubject<StatusReport>();
+  public statusReportSubject = new ReplaySubject<StatusReport>(1);
 
   constructor() {
     this.statusReportSubject.subscribe(s => console.log("There is a status report", s));
