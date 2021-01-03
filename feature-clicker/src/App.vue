@@ -26,6 +26,10 @@ import VueRx from "vue-rx";
 
 Vue.use(VueRx);
 
+// set up the websockets
+const backendUrl = process.env.VUE_APP_BACKEND;
+console.log("The backend is at: " + backendUrl);
+
 @Component({
   components: {
     HelloWorld,

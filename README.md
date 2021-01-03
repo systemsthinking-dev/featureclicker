@@ -13,4 +13,4 @@ aws cloudformation describe-stacks \
 ```
 after an `aws configure`
 
-Then you put that wss:// URL as VUE_APP_BACKEND in .env, which is in .gitignore
+Then you put that wss:// URL as VUE_APP_BACKEND in feature-clicker/.env, which is in .gitignore

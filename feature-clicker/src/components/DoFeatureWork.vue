@@ -37,13 +37,32 @@
       <tspan>Click</tspan>
       <tspan x="230" dy="1.2em">Here</tspan>
     </text>
+    <text
+      v-else-if="!understandsHowToWork"
+      x="230"
+      y="100"
+      font-size="20"
+      text-anchor="middle"
+      fill="white"
+    >
+      <tspan>Keep</tspan>
+      <tspan x="230" dy="1.2em">Clicking</tspan>
+    </text>
   </svg>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Subject, Observable, of } from "rxjs";
-import { map, scan, first, startWith, mapTo } from "rxjs/operators";
+import {
+  map,
+  scan,
+  first,
+  startWith,
+  mapTo,
+  take,
+  concat,
+} from "rxjs/operators";
 import { ClickOnFeatureWork } from "../ImportantFile";
 import { Timestamped, allRecent } from "../TryThis";
 
@@ -55,6 +74,11 @@ import { Timestamped, allRecent } from "../TryThis";
         scan(allRecent(3000), [] as Array<Timestamped>)
       ),
       hasDoneAnyWork: this.doWork.pipe(first(), mapTo(true), startWith(false)),
+      understandsHowToWork: this.doWork.pipe(
+        take(10),
+        mapTo(false),
+        concat(of(true))
+      ),
     };
   },
 })
