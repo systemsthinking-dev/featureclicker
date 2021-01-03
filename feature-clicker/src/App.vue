@@ -39,6 +39,7 @@ try {
   websocketSubject.subscribe((m) =>
     console.log("Received from websocket: " + JSON.stringify(m))
   );
+  console.log("Well, maybe we have subscribed");
 } catch (e) {
   console.log("here is the e: " + e);
   websocketSubject = new Subject<TeamEvent | MessageToEveryone>();

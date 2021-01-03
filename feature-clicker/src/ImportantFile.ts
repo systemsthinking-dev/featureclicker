@@ -13,10 +13,8 @@ export type TeamMemberId = string;
 export type MyEvent = { stuff: string } // temporary
 export type TeamEvent = { from: { teamMemberId: TeamMemberName; tick: SecondsSinceBegin }; about: MyEvent } // what we receive
 export type MessageToEveryone = {
-  message: {
-    action: "sendmessage"; // the backend route
-    data: TeamEvent;
-  };
+  action: "sendmessage"; // the backend route
+  data: TeamEvent;
 } // what we send
 function isTeamEvent(tore: TeamEvent | MessageToEveryone): tore is TeamEvent {
   const te = tore as TeamEvent;
@@ -55,10 +53,8 @@ export class ImportantThings {
       map(([myEvent, tick]) => ({ from: { teamMemberId, tick }, about: myEvent })))
       .subscribe(myTeamEvent => {
         const mfe: MessageToEveryone = {
-          message: {
-            action: "sendmessage",
-            data: myTeamEvent
-          }
+          action: "sendmessage",
+          data: JSON.stringify(myTeamEvent) as any
         };
         console.log("Sending: ", mfe);
         this.websocketSubject.next(mfe);
