@@ -74,7 +74,7 @@ function wireUpTheWebsocket(websocketSubject: Subject<TeamEvent | MessageToEvery
   return [eventsFrom, eventsTo];
 }
 
-export class ImportantThings {
+export class IndividualWork {
   constructor(private websocketSubject: Subject<TeamEvent | MessageToEveryone>,
     public teamMemberId: TeamMemberId) {
     this.featureWorkDone = new Subject<ClickOnFeatureWork>();
@@ -130,6 +130,6 @@ export class ImportantThings {
   public teamScores: Observable<TeamMemberScore[]>;
 }
 
-export const fakeImportantThings: ImportantThings = {
+export const fakeIndividualWork: IndividualWork = {
 
-} as ImportantThings;
+} as IndividualWork;

@@ -2,14 +2,14 @@ import { assert, expect } from "chai";
 import { shallowMount } from "@vue/test-utils";
 import HelloWorld from "@/components/HelloWorld.vue";
 import DoFeatureWork from "@/components/DoFeatureWork.vue";
-import { fakeImportantThings } from "@/ImportantFile";
+import { fakeIndividualWork } from "@/IndividualWork";
 import { Subject } from "rxjs";
 
 describe("HelloWorld.vue", () => {
   it("renders props.msg when passed", () => {
     const msg = "Feature Clicker";
     const wrapper = shallowMount(HelloWorld, {
-      propsData: { msg, importantThings: fakeImportantThings }
+      propsData: { msg, individualWork: fakeIndividualWork }
     });
     expect(wrapper.text()).to.include(msg);
   });

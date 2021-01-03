@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <HelloWorld :importantThings="importantThings" />
+    <HelloWorld :individualWork="individualWork" />
 
     <a href="https://systemsthinking.dev" target="_blank">
       <img
@@ -21,7 +21,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import HelloWorld from "./components/HelloWorld.vue";
-import { ImportantThings, TeamEvent, MessageToEveryone } from "./ImportantFile";
+import { IndividualWork, TeamEvent, MessageToEveryone } from "./IndividualWork";
 import VueRx from "vue-rx";
 import { webSocket } from "rxjs/webSocket";
 import { Subject } from "rxjs";
@@ -43,10 +43,10 @@ websocketSubject.subscribe((m) =>
   console.log("Received from websocket: " + JSON.stringify(m))
 );
 
-const importantThings = new ImportantThings(websocketSubject, uuid());
+const individualWork = new IndividualWork(websocketSubject, uuid());
 
 // @ts-ignore
-window.things = importantThings; // to play in the console
+window.things = individualWork; // to play in the console
 
 @Component({
   components: {
@@ -54,8 +54,8 @@ window.things = importantThings; // to play in the console
   },
 })
 export default class App extends Vue {
-  get importantThings() {
-    return importantThings;
+  get individualWork() {
+    return individualWork;
   }
 }
 </script>

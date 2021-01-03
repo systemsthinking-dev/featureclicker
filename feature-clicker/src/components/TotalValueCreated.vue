@@ -34,7 +34,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Observable } from "rxjs";
-import { SecondsSinceBegin, ValueCreated } from "../ImportantFile";
+import { SecondsSinceBegin, ValueCreated } from "../IndividualWork";
 import { map } from "rxjs/operators";
 import StackOfBills from "./StackOfBills.vue";
 

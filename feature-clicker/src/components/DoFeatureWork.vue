@@ -63,7 +63,7 @@ import {
   take,
   concat,
 } from "rxjs/operators";
-import { ClickOnFeatureWork } from "../ImportantFile";
+import { ClickOnFeatureWork } from "../IndividualWork";
 import { Timestamped, allRecent } from "../TryThis";
 
 @Component<DoFeatureWork>({

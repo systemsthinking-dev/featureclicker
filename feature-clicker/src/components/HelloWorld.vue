@@ -1,14 +1,14 @@
 <template>
   <main class="hello">
     <span class="title">{{ msg }}</span>
-    <TeamBoard :teamScores="importantThings.teamScores" />
+    <TeamBoard :teamScores="individualWork.teamScores" />
     <svg class="yo" width="800" height="400">
       Feature Clicker Goes Here
-      <DoFeatureWork :doWork="importantThings.featureWorkDone" />
-      <capability-stock :quantityObservable="importantThings.capabilityStock" />
+      <DoFeatureWork :doWork="individualWork.featureWorkDone" />
+      <capability-stock :quantityObservable="individualWork.capabilityStock" />
       <total-value-created
-        :secondsSinceBegin="importantThings.secondsSinceBegin"
-        :totalValueCreated="importantThings.totalValueCreated"
+        :secondsSinceBegin="individualWork.secondsSinceBegin"
+        :totalValueCreated="individualWork.totalValueCreated"
       />
     </svg>
   </main>
@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { ImportantThings } from "../ImportantFile";
+import { IndividualWork } from "../IndividualWork";
 import DoFeatureWork from "./DoFeatureWork.vue";
 import CapabilityStock from "./CapabilityStock.vue";
 import TotalValueCreated from "./TotalValueCreated.vue";
@@ -33,7 +33,7 @@ import TeamBoard from "./TeamBoard.vue";
 export default class HelloWorld extends Vue {
   @Prop({ default: "Software Development Simulator" }) private msg!: string;
 
-  @Prop({ required: true }) private importantThings!: ImportantThings;
+  @Prop({ required: true }) private individualWork!: IndividualWork;
 }
 </script>
 
