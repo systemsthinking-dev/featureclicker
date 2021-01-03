@@ -36,6 +36,9 @@ console.log("The backend is at: " + backendUrl);
 const websocketSubject: Subject<TeamEvent | MessageToEveryone> = webSocket(
   backendUrl
 );
+
+// this is for debugging. However there is always a chance that removing
+// it will change behavior: it's the first subscribe that triggers connection.
 websocketSubject.subscribe((m) =>
   console.log("Received from websocket: " + JSON.stringify(m))
 );
