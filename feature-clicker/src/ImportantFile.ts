@@ -1,6 +1,6 @@
 
-import { Subject, BehaviorSubject, Observable, timer, of } from "rxjs";
-import { scan, delay, first, mergeMap, startWith, withLatestFrom, map, filter } from "rxjs/operators";
+import { Subject, BehaviorSubject, Observable, timer, of, ReplaySubject } from "rxjs";
+import { scan, delay, first, mergeMap, startWith, withLatestFrom, map, filter, catchError } from "rxjs/operators";
 
 console.log("Does this happen?");
 
@@ -22,7 +22,7 @@ export type TeamEvent = {
 } // what we receive
 export type MessageToEveryone = {
   action: "sendmessage"; // the backend route
-  data: TeamEvent;
+  data: string; // JSON.stringified TeamEvent;
 } // what we send
 function isTeamEvent(tore: TeamEvent | MessageToEveryone): tore is TeamEvent {
   const te = tore as TeamEvent;
@@ -31,11 +31,27 @@ function isTeamEvent(tore: TeamEvent | MessageToEveryone): tore is TeamEvent {
 
 const yourName = of("Fred"); // TODO: Wire up an input
 
+/**
+ * Websocket Handling
+ * @param websocketSubject
+ * @param teamMemberId
+ * @param yourName
+ * @param secondsSinceBegin
+ */
 function wireUpTheWebsocket(websocketSubject: Subject<TeamEvent | MessageToEveryone>,
-  teamMemberId: TeamMemberId, yourName: Observable<TeamMemberName>, secondsSinceBegin: Observable<SecondsSinceBegin>): [Observable<TeamEvent>, Subject<MyEvent>] {
-  const eventsFrom = websocketSubject.pipe(filter(isTeamEvent)); // does that count as subscribing?
+  teamMemberId: TeamMemberId,
+  yourName: Observable<TeamMemberName>,
+  secondsSinceBegin: Observable<SecondsSinceBegin>): [Observable<TeamEvent>, (sendThis: MyEvent) => void] {
+  const selfSubject = new ReplaySubject<MessageToEveryone>(1);
+  const selfObservable: Observable<TeamEvent> = selfSubject.pipe(map(mte => JSON.parse(mte.data)));
 
-  const eventsTo = new Subject<MyEvent>();
+  const eventsFrom = websocketSubject.pipe(
+    catchError(e => {
+      console.log("oops, websocket failure: ", e);
+      return selfObservable;
+    }), filter(isTeamEvent));
+
+  const eventsTo = new Subject<MyEvent>(); // captured in returned function
 
   // any event in the myEvents stream gets sent to the server along with metadata.
   // someday, break this websocket stuff into a different file. it is not core domain, only supporting
@@ -44,12 +60,22 @@ function wireUpTheWebsocket(websocketSubject: Subject<TeamEvent | MessageToEvery
     .subscribe((myTeamEvent: TeamEvent) => {
       const mfe: MessageToEveryone = {
         action: "sendmessage",
-        data: JSON.stringify(myTeamEvent) as any
+        data: JSON.stringify(myTeamEvent)
       };
       console.log("Sending: ", mfe);
-      websocketSubject.next(mfe);
+      try {
+        websocketSubject.next(mfe);
+      } catch (e) {
+        console.log("oh ook!", e);
+      }
+      selfSubject.next(mfe);
     });
-  return [eventsFrom, eventsTo];
+
+  function sendToServer(event: MyEvent) {
+    eventsTo.next(event);
+  }
+
+  return [eventsFrom, sendToServer];
 }
 
 export class ImportantThings {
@@ -63,7 +89,7 @@ export class ImportantThings {
       mergeMap(_t => timer(0, 1000)), // start emitting numbers every second
       startWith(0)); // before that, be 0
 
-    [this.eventsFromServer, this.myEvents] = wireUpTheWebsocket(websocketSubject, teamMemberId, yourName, this.secondsSinceBegin);
+    [this.eventsFromServer, this.sendToServer] = wireUpTheWebsocket(websocketSubject, teamMemberId, yourName, this.secondsSinceBegin);
 
     this.teamScores = this.eventsFromServer.pipe(scan((accum, e) => {
       console.log("I see an event: ", e);
@@ -88,11 +114,7 @@ export class ImportantThings {
     this.sendToServer({ vps: 0 });
   }
 
-  private myEvents: Subject<MyEvent>;
-
-  sendToServer(event: MyEvent) {
-    this.myEvents.next(event);
-  }
+  sendToServer: (event: MyEvent) => void;
 
   public eventsFromServer: Observable<TeamEvent>;
 
