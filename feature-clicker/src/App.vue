@@ -28,6 +28,7 @@ import HelloWorld from "./components/HelloWorld.vue";
 import TeamBoard from "./components/TeamBoard.vue";
 import { IndividualWork } from "./system/IndividualWork";
 import { TeamSystem } from "./system/TeamSystem";
+import { Individual_within_Team } from "./system/Individual_within_Team";
 import VueRx from "vue-rx";
 import { webSocket } from "rxjs/webSocket";
 import { Subject } from "rxjs";
@@ -38,8 +39,9 @@ Vue.use(VueRx);
 const backendUrl = process.env.VUE_APP_BACKEND;
 console.log("The backend is at: " + backendUrl);
 
-const individualWork = new IndividualWork();
-const teamSystem = new TeamSystem(backendUrl);
+const relationship = new Individual_within_Team();
+const individualWork = new IndividualWork(relationship);
+const teamSystem = new TeamSystem(backendUrl, relationship);
 
 // @ts-ignore
 window.things = individualWork; // play in the console

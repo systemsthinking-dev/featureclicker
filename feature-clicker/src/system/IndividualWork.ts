@@ -1,6 +1,7 @@
 
 import { Subject, BehaviorSubject, Observable, timer, of, ReplaySubject } from "rxjs";
 import { scan, delay, first, mergeMap, startWith, withLatestFrom, map, filter, catchError } from "rxjs/operators";
+import type { Individual_within_Team } from "./Individual_within_Team";
 
 console.log("Does this happen?");
 
@@ -10,7 +11,7 @@ export type ValueCreated = number;
 export type ValuePerSecond = number;
 
 export class IndividualWork {
-  constructor() {
+  constructor(teamRelationship: Individual_within_Team) {
     this.featureWorkDone = new Subject<ClickOnFeatureWork>();
     this.capabilityStock = new BehaviorSubject<ValuePerSecond>(0);
     this.totalValueCreated = new BehaviorSubject<ValueCreated>(0);

@@ -3,16 +3,17 @@ import type { ValuePerSecond, SecondsSinceBegin } from "./IndividualWork";
 import { webSocket } from "rxjs/webSocket";
 import { catchError, filter, map, scan, withLatestFrom } from "rxjs/operators";
 import { v4 as uuid } from "uuid";
+import type { Individual_within_Team } from "./Individual_within_Team";
 
 export type TeamMemberScore = { teamMemberId: TeamMemberId; name: TeamMemberName; vps: ValuePerSecond }
 export type TeamMemberName = string;
 export type TeamMemberId = string;
-export type MyEvent = { tick: SecondsSinceBegin; vps: ValuePerSecond } // temporary
+export type StatusReport = { tick: SecondsSinceBegin; vps: ValuePerSecond } // temporary
 export type TeamEvent = {
   from: {
     teamMemberId: TeamMemberId;
     teamMemberName: TeamMemberName;
-  }; about: MyEvent;
+  }; about: StatusReport;
 } // what we receive
 export type MessageToEveryone = {
   action: "sendmessage"; // the backend route
@@ -35,7 +36,7 @@ const yourName = of("Fred"); // TODO: Wire up an input
  */
 function wireUpTheWebsocket(websocketSubject: Subject<TeamEvent | MessageToEveryone>,
   teamMemberId: TeamMemberId,
-  yourName: Observable<TeamMemberName>): [Observable<TeamEvent>, Subject<MyEvent>] {
+  yourName: Observable<TeamMemberName>): [Observable<TeamEvent>, Subject<StatusReport>] {
   const selfSubject = new ReplaySubject<MessageToEveryone>(1);
   const selfObservable: Observable<TeamEvent> = selfSubject.pipe(map(mte => JSON.parse(mte.data)));
 
@@ -45,7 +46,7 @@ function wireUpTheWebsocket(websocketSubject: Subject<TeamEvent | MessageToEvery
       return selfObservable;
     }), filter(isTeamEvent));
 
-  const eventsTo = new Subject<MyEvent>(); // captured in returned function
+  const eventsTo = new Subject<StatusReport>(); // captured in returned function
 
   // any event in the myEvents stream gets sent to the server along with metadata.
   // someday, break this websocket stuff into a different file. it is not core domain, only supporting
@@ -69,7 +70,7 @@ function wireUpTheWebsocket(websocketSubject: Subject<TeamEvent | MessageToEvery
 }
 
 export class TeamSystem {
-  constructor(backendUrl: string) {
+  constructor(backendUrl: string, individualRelationship: Individual_within_Team) {
     this.teamMemberId = uuid();
 
     const websocketSubject: Subject<TeamEvent | MessageToEveryone> = webSocket(
@@ -85,7 +86,7 @@ export class TeamSystem {
     const [eventsFromServer, eventsTo] = wireUpTheWebsocket(websocketSubject,
       this.teamMemberId, yourName);
     this.eventsFromServer = eventsFromServer;
-    this.sendToServer = (event: MyEvent) => {
+    this.sendToServer = (event: StatusReport) => {
       eventsTo.next(event);
     };
 
@@ -99,7 +100,7 @@ export class TeamSystem {
 
   private teamMemberId: string;
 
-  sendToServer: (event: MyEvent) => void;
+  sendToServer: (event: StatusReport) => void;
 
   public eventsFromServer: Observable<TeamEvent>;
 
