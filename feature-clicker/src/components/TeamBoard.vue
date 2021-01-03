@@ -12,12 +12,21 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { of, Observable } from "rxjs";
-import { TeamMemberScore } from "@/system/TeamSystem";
+import { TeamMemberId, TeamMemberScore } from "@/system/TeamSystem";
+import { map } from "rxjs/operators";
 
 @Component<TeamBoard>({
   subscriptions() {
     return {
-      teammates: this.teamScores,
+      teammates: this.teamScores.pipe(
+        map((tooMany) => {
+          let stuff: Record<TeamMemberId, TeamMemberScore> = {};
+          tooMany.forEach((a) => {
+            stuff[a.teamMemberId] = a;
+          });
+          return stuff;
+        })
+      ),
     };
   },
 })
