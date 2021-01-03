@@ -1,7 +1,7 @@
 <template>
   <main class="hello">
     <span class="title">{{ msg }}</span>
-    <TeamBoard />
+    <TeamBoard :teamScores="importantThings.teamScores" />
     <svg class="yo" width="800" height="400">
       Feature Clicker Goes Here
       <DoFeatureWork :doWork="importantThings.featureWorkDone" />

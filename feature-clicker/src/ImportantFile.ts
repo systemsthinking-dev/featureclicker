@@ -12,8 +12,14 @@ export type ValuePerSecond = number;
 export type TeamMemberScore = { teamMemberId: TeamMemberId; name: TeamMemberName; vps: ValuePerSecond }
 export type TeamMemberName = string;
 export type TeamMemberId = string;
-export type MyEvent = { stuff: string } // temporary
-export type TeamEvent = { from: { teamMemberId: TeamMemberName; tick: SecondsSinceBegin }; about: MyEvent } // what we receive
+export type MyEvent = { vps: ValuePerSecond } // temporary
+export type TeamEvent = {
+  from: {
+    teamMemberId: TeamMemberId;
+    teamMemberName: TeamMemberName;
+    tick: SecondsSinceBegin;
+  }; about: MyEvent;
+} // what we receive
 export type MessageToEveryone = {
   action: "sendmessage"; // the backend route
   data: TeamEvent;
@@ -23,6 +29,8 @@ function isTeamEvent(tore: TeamEvent | MessageToEveryone): tore is TeamEvent {
   return !!te.from && !!te.from.teamMemberId && (te.from.tick !== undefined);
 }
 
+const yourName = "Fred";
+
 export class ImportantThings {
   constructor(private websocketSubject: Subject<TeamEvent | MessageToEveryone>,
     public teamMemberId: TeamMemberId) {
@@ -30,6 +38,12 @@ export class ImportantThings {
     this.capabilityStock = new BehaviorSubject<ValuePerSecond>(0);
     this.totalValueCreated = new BehaviorSubject<ValueCreated>(0);
     this.eventsFromServer = websocketSubject.pipe(filter(isTeamEvent)); // does that count as subscribing?
+    this.teamScores = this.eventsFromServer.pipe(scan((accum, e) => {
+      console.log("I see an event: ", e);
+      accum.push({ teamMemberId: e.from.teamMemberId, name: e.from.teamMemberName, vps: e.about.vps });
+      return accum;
+    }, [] as Array<TeamMemberScore>)
+    );
     this.secondsSinceBegin = this.featureWorkDone.pipe(
       first(), // on the first click,
       mergeMap(_t => timer(0, 1000)), // start emitting numbers every second
@@ -53,8 +67,8 @@ export class ImportantThings {
     // any event in the myEvents stream gets sent to the server along with metadata.
     // someday, break this websocket stuff into a different file. it is not core domain, only supporting
     this.myEvents.pipe(withLatestFrom(this.secondsSinceBegin),
-      map(([myEvent, tick]) => ({ from: { teamMemberId, tick }, about: myEvent })))
-      .subscribe(myTeamEvent => {
+      map(([myEvent, tick]) => ({ from: { teamMemberId, teamMemberName: yourName, tick }, about: myEvent })))
+      .subscribe((myTeamEvent: TeamEvent) => {
         const mfe: MessageToEveryone = {
           action: "sendmessage",
           data: JSON.stringify(myTeamEvent) as any
@@ -63,7 +77,7 @@ export class ImportantThings {
         this.websocketSubject.next(mfe);
       });
 
-    this.sendToServer({ stuff: "things" });
+    this.sendToServer({ vps: 0 });
   }
 
   private myEvents: Subject<MyEvent>;
@@ -81,6 +95,8 @@ export class ImportantThings {
   public secondsSinceBegin: Observable<SecondsSinceBegin>;
 
   public totalValueCreated: BehaviorSubject<ValueCreated>;
+
+  public teamScores: Observable<TeamMemberScore[]>;
 }
 
 export const fakeImportantThings: ImportantThings = {

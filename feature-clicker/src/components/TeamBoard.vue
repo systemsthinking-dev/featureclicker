@@ -10,21 +10,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
 import { of, Observable } from "rxjs";
 import { TeamMemberScore } from "@/ImportantFile";
 
-@Component({
+@Component<TeamBoard>({
   subscriptions() {
     return {
-      teammates: of([{ teamMemberId: "2l34kj3;kf;e", name: "Jim", vps: 42 }]),
+      teammates: this.teamScores,
     };
   },
 })
 export default class TeamBoard extends Vue {
+  @Prop({ required: true }) private teamScores!: Observable<TeamMemberScore[]>;
+
   public teamName = "Woozles";
 
-  private teammates!: Observable<TeamMemberScore>;
+  private teammates!: Observable<TeamMemberScore[]>;
 }
 </script>
 
