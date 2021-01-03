@@ -2,7 +2,7 @@
   <svg x="350" y="10">
     <text x="150" y="20">value per second</text>
     <text x="150" y="40">{{ quantity }}</text>
-    <line class="flow-of-created-value" x1="150" y1="90" y2="115" x2="325" />
+    <line class="flow-of-created-value" x1="150" y1="90" y2="90" x2="325" />
     <circle
       class="capability-stock"
       :r="circleRadius"
