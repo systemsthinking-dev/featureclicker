@@ -20,6 +20,6 @@ describe("DoFeatureWork.vue", () => {
     const wrapper = shallowMount(DoFeatureWork, {
       propsData: { doWork: new Subject() }
     });
-    assert(true);
+    assert(wrapper);
   });
 });

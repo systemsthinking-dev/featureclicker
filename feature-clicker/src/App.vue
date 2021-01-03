@@ -23,7 +23,7 @@ import { Component, Vue } from "vue-property-decorator";
 import HelloWorld from "./components/HelloWorld.vue";
 import { ImportantThings, TeamEvent, MessageToEveryone } from "./ImportantFile";
 import VueRx from "vue-rx";
-import { webSocket, WebSocketSubject } from "rxjs/webSocket";
+import { webSocket } from "rxjs/webSocket";
 import { Subject } from "rxjs";
 import { v4 as uuid } from "uuid";
 
@@ -33,8 +33,9 @@ Vue.use(VueRx);
 const backendUrl = process.env.VUE_APP_BACKEND + "poo";
 console.log("The backend is at: " + backendUrl);
 
-let websocketSubject: Subject<TeamEvent | MessageToEveryone>;
-websocketSubject = webSocket(backendUrl);
+const websocketSubject: Subject<TeamEvent | MessageToEveryone> = webSocket(
+  backendUrl
+);
 websocketSubject.subscribe((m) =>
   console.log("Received from websocket: " + JSON.stringify(m))
 );
