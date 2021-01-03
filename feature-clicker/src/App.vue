@@ -21,11 +21,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import HelloWorld from "./components/HelloWorld.vue";
-import {
-  IndividualWork,
-  TeamEvent,
-  MessageToEveryone,
-} from "./system/IndividualWork";
+import { IndividualWork } from "./system/IndividualWork";
 import { TeamSystem } from "./system/TeamSystem";
 import VueRx from "vue-rx";
 import { webSocket } from "rxjs/webSocket";
@@ -41,7 +37,7 @@ const individualWork = new IndividualWork();
 const teamSystem = new TeamSystem(backendUrl);
 
 // @ts-ignore
-window.things = individualWork; // to play in the console
+window.things = individualWork; // play in the console
 
 @Component({
   components: {

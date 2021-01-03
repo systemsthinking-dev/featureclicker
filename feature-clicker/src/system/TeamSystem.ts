@@ -105,7 +105,6 @@ export class TeamSystem {
 
   public eventsFromServer: Observable<TeamEvent>;
 
-
   public teamScores: Observable<TeamMemberScore[]>;
 
 }
