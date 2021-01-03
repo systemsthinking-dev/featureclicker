@@ -111,7 +111,6 @@ export default class TotalValueCreated extends Vue {
 <style scoped>
 text {
   fill: black;
-  text-anchor: middle;
   user-select: none;
 }
 rect.money-growing {

@@ -55,7 +55,6 @@ circle.capability-stock {
   transition-duration: 1s;
 }
 text {
-  text-anchor: middle;
   user-select: none;
 }
 .vps {
