@@ -31,7 +31,6 @@ export class IndividualWork {
       this.secondsSinceBegin.pipe(withLatestFrom(this.capabilityStock), map(([_tick, vps]) => vps));
 
     valueFlowingFromCapabilities.pipe(scan((accum, moreValue) => accum + moreValue, 0)).subscribe(this.totalValueCreated);
-
   }
 
   public featureWorkDone: Subject<ClickOnFeatureWork>;
@@ -41,7 +40,6 @@ export class IndividualWork {
   public secondsSinceBegin: Observable<SecondsSinceBegin>;
 
   public totalValueCreated: BehaviorSubject<ValueCreated>;
-
 }
 
 export const fakeIndividualWork: IndividualWork = {

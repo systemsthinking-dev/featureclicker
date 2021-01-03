@@ -7,7 +7,7 @@ import { v4 as uuid } from "uuid";
 export type TeamMemberScore = { teamMemberId: TeamMemberId; name: TeamMemberName; vps: ValuePerSecond }
 export type TeamMemberName = string;
 export type TeamMemberId = string;
-export type MyEvent = { tick: SecondsSinceBegin, vps: ValuePerSecond } // temporary
+export type MyEvent = { tick: SecondsSinceBegin; vps: ValuePerSecond } // temporary
 export type TeamEvent = {
   from: {
     teamMemberId: TeamMemberId;
@@ -68,7 +68,6 @@ function wireUpTheWebsocket(websocketSubject: Subject<TeamEvent | MessageToEvery
   return [eventsFrom, eventsTo];
 }
 
-
 export class TeamSystem {
   constructor(backendUrl: string) {
     this.teamMemberId = uuid();
@@ -90,7 +89,6 @@ export class TeamSystem {
       eventsTo.next(event);
     };
 
-
     this.teamScores = this.eventsFromServer.pipe(scan((accum, e) => {
       console.log("I see an event: ", e);
       accum.push({ teamMemberId: e.from.teamMemberId, name: e.from.teamMemberName, vps: e.about.vps });
@@ -99,12 +97,11 @@ export class TeamSystem {
     );
   }
 
-  private teamMemberId;
+  private teamMemberId: string;
 
   sendToServer: (event: MyEvent) => void;
 
   public eventsFromServer: Observable<TeamEvent>;
 
   public teamScores: Observable<TeamMemberScore[]>;
-
 }

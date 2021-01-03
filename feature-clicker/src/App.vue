@@ -2,7 +2,7 @@
   <div id="app">
     <main class="hello">
       <span class="title">{{ msg }}</span>
-      <TeamBoard :teamScores="individualWork.teamScores" />
+      <TeamBoard :teamScores="teamSystem.teamScores" />
       <HelloWorld :individualWork="individualWork" />
     </main>
 
@@ -25,6 +25,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import HelloWorld from "./components/HelloWorld.vue";
+import TeamBoard from "./components/TeamBoard.vue";
 import { IndividualWork } from "./system/IndividualWork";
 import { TeamSystem } from "./system/TeamSystem";
 import VueRx from "vue-rx";
@@ -46,11 +47,18 @@ window.things = individualWork; // play in the console
 @Component({
   components: {
     HelloWorld,
+    TeamBoard,
   },
 })
 export default class App extends Vue {
+  private msg = "Software Development Simulator";
+
   get individualWork() {
     return individualWork;
+  }
+
+  get teamSystem() {
+    return teamSystem;
   }
 }
 </script>
@@ -84,5 +92,11 @@ body {
     rgba(225, 236, 245, 1) 50%,
     rgba(0, 212, 255, 1) 100%
   );
+}
+
+.title {
+  font-weight: bold;
+  font-size: x-large;
+  padding: 20px;
 }
 </style>

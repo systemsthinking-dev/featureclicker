@@ -12,7 +12,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { of, Observable } from "rxjs";
-import { TeamMemberScore } from "@/system/IndividualWork";
+import { TeamMemberScore } from "@/system/TeamSystem";
 
 @Component<TeamBoard>({
   subscriptions() {

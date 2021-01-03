@@ -12,34 +12,25 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { IndividualWork } from "../system/IndividualWork";
+import type { IndividualWork } from "../system/IndividualWork";
 import DoFeatureWork from "./DoFeatureWork.vue";
 import CapabilityStock from "./CapabilityStock.vue";
 import TotalValueCreated from "./TotalValueCreated.vue";
-import TeamBoard from "./TeamBoard.vue";
 
 @Component({
   components: {
     DoFeatureWork,
     CapabilityStock,
     TotalValueCreated,
-    TeamBoard,
   },
 })
 export default class HelloWorld extends Vue {
-  @Prop({ default: "Software Development Simulator" }) private msg!: string;
-
   @Prop({ required: true }) private individualWork!: IndividualWork;
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only (wow) -->
 <style scoped>
-.title {
-  font-weight: bold;
-  font-size: x-large;
-  padding: 20px;
-}
 svg.yo {
   border: 5px solid gray;
   display: block;
