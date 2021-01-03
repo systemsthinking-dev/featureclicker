@@ -1,6 +1,10 @@
 <template>
   <div id="app">
-    <HelloWorld :individualWork="individualWork" />
+    <main class="hello">
+      <span class="title">{{ msg }}</span>
+      <TeamBoard :teamScores="individualWork.teamScores" />
+      <HelloWorld :individualWork="individualWork" />
+    </main>
 
     <a href="https://systemsthinking.dev" target="_blank">
       <img

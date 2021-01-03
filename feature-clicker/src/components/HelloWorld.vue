@@ -1,17 +1,13 @@
 <template>
-  <main class="hello">
-    <span class="title">{{ msg }}</span>
-    <TeamBoard :teamScores="individualWork.teamScores" />
-    <svg class="yo" width="800" height="400">
-      Feature Clicker Goes Here
-      <DoFeatureWork :doWork="individualWork.featureWorkDone" />
-      <capability-stock :quantityObservable="individualWork.capabilityStock" />
-      <total-value-created
-        :secondsSinceBegin="individualWork.secondsSinceBegin"
-        :totalValueCreated="individualWork.totalValueCreated"
-      />
-    </svg>
-  </main>
+  <svg class="yo" width="800" height="400">
+    Feature Clicker Goes Here
+    <DoFeatureWork :doWork="individualWork.featureWorkDone" />
+    <capability-stock :quantityObservable="individualWork.capabilityStock" />
+    <total-value-created
+      :secondsSinceBegin="individualWork.secondsSinceBegin"
+      :totalValueCreated="individualWork.totalValueCreated"
+    />
+  </svg>
 </template>
 
 <script lang="ts">
