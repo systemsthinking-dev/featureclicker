@@ -1,6 +1,6 @@
 <template>
   <main class="hello">
-    <h1>{{ msg }}</h1>
+    <span class="title">{{ msg }}</span>
     <TeamBoard />
     <svg class="yo" width="800" height="400">
       Feature Clicker Goes Here
@@ -39,6 +39,11 @@ export default class HelloWorld extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only (wow) -->
 <style scoped>
+.title {
+  font-weight: bold;
+  font-size: x-large;
+  padding: 20px;
+}
 svg.yo {
   border: 5px solid gray;
   display: block;
