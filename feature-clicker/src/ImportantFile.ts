@@ -87,6 +87,9 @@ export class ImportantThings {
 
     const [eventsFromServer, eventsTo] = wireUpTheWebsocket(websocketSubject, teamMemberId, yourName, this.secondsSinceBegin);
     this.eventsFromServer = eventsFromServer;
+    this.sendToServer = (event: MyEvent) => {
+      eventsTo.next(event);
+    };
 
     this.teamScores = this.eventsFromServer.pipe(scan((accum, e) => {
       console.log("I see an event: ", e);
@@ -108,11 +111,8 @@ export class ImportantThings {
 
     valueFlowingFromCapabilities.pipe(scan((accum, moreValue) => accum + moreValue, 0)).subscribe(this.totalValueCreated);
 
-    this.sendToServer = (event: MyEvent) => {
-      eventsTo.next(event);
-    };
-
     // Next: hook up capabilityStock to send an event every 5s
+    this.sendToServer({ vps: 0 });
   }
 
   sendToServer: (event: MyEvent) => void;
