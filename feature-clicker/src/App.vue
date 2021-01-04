@@ -3,7 +3,7 @@
     <main class="hello">
       <div class="one">
         <div class="title">{{ msg }}</div>
-        <NameInput />
+        <NameInput v-stream:nameChange="teamSystem.memberNameChangeEvent" />
       </div>
       <TeamBoard :teamScores="teamSystem.teamScores" />
       <HelloWorld :individualWork="individualWork" />
