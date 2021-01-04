@@ -1,5 +1,8 @@
 <template>
- <input v-model.lazy="currentName"></input>
+<span>
+  <label for="nameInput">My name: </label>
+ <input id="nameInput" v-model.lazy="currentName"></input>
+ </span>
 </template>
 
 What does this do? Is it all comments out here?
