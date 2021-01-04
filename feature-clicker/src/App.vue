@@ -24,14 +24,12 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import VueRx from "vue-rx";
 import HelloWorld from "./components/HelloWorld.vue";
 import TeamBoard from "./components/TeamBoard.vue";
 import { IndividualWork } from "./system/IndividualWork";
 import { TeamSystem } from "./system/TeamSystem";
 import { Individual_within_Team } from "./system/Individual_within_Team";
-import VueRx from "vue-rx";
-import { webSocket } from "rxjs/webSocket";
-import { Subject } from "rxjs";
 
 Vue.use(VueRx);
 

@@ -1,8 +1,7 @@
 /* eslint-disable */
-import { Observable, of, ReplaySubject, Subject } from "rxjs";
+import { Observable, of, Subject } from "rxjs";
 import type { ValuePerSecond, SecondsSinceBegin } from "./IndividualWork";
-import { webSocket } from "rxjs/webSocket";
-import { catchError, filter, map, scan, withLatestFrom } from "rxjs/operators";
+import { map, scan, withLatestFrom } from "rxjs/operators";
 import { v4 as uuid } from "uuid";
 import type { Individual_within_Team } from "./Individual_within_Team";
 import { wireUpTheWebsocket } from "./backendInterface";

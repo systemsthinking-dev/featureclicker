@@ -1,6 +1,6 @@
 
-import { Subject, BehaviorSubject, Observable, timer, of, ReplaySubject } from "rxjs";
-import { scan, delay, first, mergeMap, startWith, withLatestFrom, map, filter, catchError, take } from "rxjs/operators";
+import { Subject, BehaviorSubject, Observable, timer } from "rxjs";
+import { scan, delay, first, mergeMap, startWith, withLatestFrom, map } from "rxjs/operators";
 import type { Individual_within_Team } from "./Individual_within_Team";
 import type { StatusReport } from "./TeamSystem";
 
