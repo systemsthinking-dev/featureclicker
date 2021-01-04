@@ -1,11 +1,18 @@
 <template>
   <div class="team-board">
     <div class="team-title">Team {{ teamName }}</div>
-    <ul>
-      <li v-for="mate in teammates" :key="mate.teamMemberId">
-        {{ mate.name }} {{ mate.vps }}
-      </li>
-    </ul>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">name</th>
+          <th scope="col">vps</th>
+        </tr>
+      </thead>
+      <tr v-for="mate in teammates" :key="mate.teamMemberId">
+        <td>{{ mate.name }}</td>
+        <td>{{ mate.vps }}</td>
+      </tr>
+    </table>
   </div>
 </template>
 
@@ -40,6 +47,15 @@ export default class TeamBoard extends Vue {
 </script>
 
 <style scoped>
+table {
+  border: 1px solid black;
+  border-collapse: collapse;
+  width: 100%;
+}
+td,
+th {
+  border: 1px solid black;
+}
 .team-board {
   border: 3px darkblue solid;
   padding: 5px;
@@ -48,6 +64,7 @@ export default class TeamBoard extends Vue {
 }
 
 .team-title {
-  font-weight: bold;
+  font-weight: bolder;
+  padding: 5px;
 }
 </style>
