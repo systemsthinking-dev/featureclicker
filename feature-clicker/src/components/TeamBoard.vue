@@ -8,7 +8,7 @@
           <th scope="col">vps</th>
         </tr>
       </thead>
-      <tr v-for="mate in teammates" :key="mate.teamMemberId">
+      <tr v-for="(mate, id) of teammates" :key="id">
         <td>{{ mate.name }}</td>
         <td>{{ mate.vps }}</td>
       </tr>
@@ -25,15 +25,7 @@ import { map } from "rxjs/operators";
 @Component<TeamBoard>({
   subscriptions() {
     return {
-      teammates: this.teamScores.pipe(
-        map((tooMany) => {
-          let stuff: Record<TeamMemberId, TeamMemberScore> = {};
-          tooMany.forEach((a) => {
-            stuff[a.teamMemberId] = a;
-          });
-          return stuff;
-        })
-      ),
+      teammates: this.teamScores,
     };
   },
 })

@@ -9,6 +9,7 @@ import { wireUpTheWebsocket } from "./backendInterface";
 export type TeamMemberScore = { teamMemberId: TeamMemberId; name: TeamMemberName; vps: ValuePerSecond }
 export type TeamMemberName = string;
 export type TeamMemberId = string;
+export type TeamStatusSummary = Record<TeamMemberId, StatusReport & { name: TeamMemberName }>;
 export type StatusReport = { tick: SecondsSinceBegin; vps: ValuePerSecond } // temporary
 export type TeamEvent = {
   from: {
@@ -17,6 +18,7 @@ export type TeamEvent = {
   }; about: StatusReport;
 } // what we receive
 
+// this is a UI detail, but I don't know how else to get the events right now
 type MemberNameChangeEvent = {
   event: {
     name: "nameChange",
@@ -33,9 +35,9 @@ export class TeamSystem {
 
     this.teamScores = this.eventsFromServer.pipe(scan((accum, e) => {
       console.log("I see an event: ", e);
-      accum.push({ teamMemberId: e.from.teamMemberId, name: e.from.teamMemberName, vps: e.about.vps });
+      accum[e.from.teamMemberId] = { name: e.from.teamMemberName, ...e.about };
       return accum;
-    }, [] as Array<TeamMemberScore>)
+    }, {} as TeamStatusSummary)
     );
 
     /*
@@ -74,5 +76,5 @@ export class TeamSystem {
 
   public eventsFromServer: Observable<TeamEvent>;
 
-  public teamScores: Observable<TeamMemberScore[]>;
+  public teamScores: Observable<TeamStatusSummary>;
 }
