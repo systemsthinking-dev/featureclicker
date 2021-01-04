@@ -16,80 +16,67 @@ export type TeamEvent = {
     teamMemberName: TeamMemberName;
   }; about: StatusReport;
 } // what we receive
-export type MessageToEveryone = {
+type MessageToEveryone = {
   action: "sendmessage"; // the backend route
   data: string; // JSON.stringified TeamEvent;
 } // what we send
 
-function isTeamEvent(tore: TeamEvent | MessageToEveryone): tore is TeamEvent {
-  const te = tore as TeamEvent;
-  return !!te.from && !!te.from.teamMemberId;
+function isNotMessageToEveryone<U>(msg: U | MessageToEveryone): msg is U {
+  const te = msg as MessageToEveryone;
+  return !(te.action === "sendmessage")
 }
 
 const yourName = of("Fred"); // TODO: Wire up an input
 
 /**
  * Websocket Handling
+ * T: the type that we send
+ * U: the type we receive
  * @param websocketSubject
  * @param teamMemberId
  * @param yourName
  * @param secondsSinceBegin
  */
-function wireUpTheWebsocket(websocketSubject: Subject<TeamEvent | MessageToEveryone>,
-  teamMemberId: TeamMemberId,
-  yourName: Observable<TeamMemberName>): [Observable<TeamEvent>, Subject<StatusReport>] {
+function wireUpTheWebsocket<U>(backendUrl: string): [Observable<U>, Subject<U>] {
   const selfSubject = new ReplaySubject<MessageToEveryone>(1);
-  const selfObservable: Observable<TeamEvent> = selfSubject.pipe(map(mte => JSON.parse(mte.data)));
+  const selfObservable: Observable<U> = selfSubject.pipe(map(mte => JSON.parse(mte.data)));
 
-  const eventsFrom = websocketSubject.pipe(
+  // we receive U from the websocket, but we always send MessageToEveryone
+  const websocketSubject: Subject<U | MessageToEveryone> = webSocket(backendUrl);
+  // this is for debugging. However there is always a chance that removing
+  // it will change behavior: it's the first subscribe that triggers connection.
+  websocketSubject.subscribe((m) =>
+    console.log("Received from websocket: " + JSON.stringify(m))
+  );
+
+  const eventsFrom: Observable<U> = websocketSubject.pipe(
     catchError(e => {
       console.log("oops, websocket failure: ", e);
       return selfObservable;
-    }), filter(isTeamEvent));
+    }), filter(isNotMessageToEveryone));
 
-  const eventsTo = new Subject<StatusReport>(); // captured in returned function
+  const eventsTo = new Subject<U>(); // captured in returned function
 
   // any event in the myEvents stream gets sent to the server along with metadata.
   // someday, break this websocket stuff into a different file. it is not core domain, only supporting
-  eventsTo.pipe(withLatestFrom(yourName),
-    map(([myEvent, yourName]) => ({ from: { teamMemberId, teamMemberName: yourName }, about: myEvent })))
-    .subscribe((myTeamEvent: TeamEvent) => {
-      const mfe: MessageToEveryone = {
-        action: "sendmessage",
-        data: JSON.stringify(myTeamEvent)
-      };
-      console.log("Sending: ", mfe);
-      try {
-        websocketSubject.next(mfe);
-      } catch (e) {
-        console.log("oh ook!", e);
-      }
-      selfSubject.next(mfe);
-    });
+  eventsTo.subscribe((myTeamEvent: U) => {
+    const mfe: MessageToEveryone = {
+      action: "sendmessage",
+      data: JSON.stringify(myTeamEvent)
+    };
+    console.log("Sending: ", mfe);
+    websocketSubject.next(mfe);
+    selfSubject.next(mfe); // backup in case the websocket goes down
+  });
 
   return [eventsFrom, eventsTo];
 }
 
 export class TeamSystem {
   constructor(backendUrl: string, individualRelationship: Individual_within_Team) {
-    this.teamMemberId = uuid();
 
-    const websocketSubject: Subject<TeamEvent | MessageToEveryone> = webSocket(
-      backendUrl
-    );
-
-    // this is for debugging. However there is always a chance that removing
-    // it will change behavior: it's the first subscribe that triggers connection.
-    websocketSubject.subscribe((m) =>
-      console.log("Received from websocket: " + JSON.stringify(m))
-    );
-
-    const [eventsFromServer, eventsTo] = wireUpTheWebsocket(websocketSubject,
-      this.teamMemberId, yourName);
+    const [eventsFromServer, eventsToServer] = wireUpTheWebsocket<TeamEvent>(backendUrl);
     this.eventsFromServer = eventsFromServer;
-    this.sendToServer = (event: StatusReport) => {
-      eventsTo.next(event);
-    };
 
     this.teamScores = this.eventsFromServer.pipe(scan((accum, e) => {
       console.log("I see an event: ", e);
@@ -98,14 +85,22 @@ export class TeamSystem {
     }, [] as Array<TeamMemberScore>)
     );
 
+    const teamMemberId = this.teamMemberId;
+    const outgoingStatusReports = new Subject<StatusReport>();
+    // wrap status report in message details, so it's the same format we expect to receive
+    outgoingStatusReports.pipe(withLatestFrom(yourName),
+      map(([myEvent, yourName]) => {
+        const te: TeamEvent = { from: { teamMemberId, teamMemberName: yourName }, about: myEvent };
+        return te;
+      }))
+      .subscribe(eventsToServer)
+
     individualRelationship.hookUpTeam({
-      outgoingStatusReports: eventsTo,
+      outgoingStatusReports,
     });
   }
 
-  private teamMemberId: string;
-
-  sendToServer: (event: StatusReport) => void;
+  private teamMemberId = uuid();
 
   public eventsFromServer: Observable<TeamEvent>;
 
