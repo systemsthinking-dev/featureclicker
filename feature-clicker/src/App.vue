@@ -1,7 +1,10 @@
 <template>
   <div id="app">
     <main class="hello">
-      <span class="title">{{ msg }}</span>
+      <div class="one">
+        <div class="title">{{ msg }}</div>
+        <NameInput />
+      </div>
       <TeamBoard :teamScores="teamSystem.teamScores" />
       <HelloWorld :individualWork="individualWork" />
     </main>
@@ -27,6 +30,7 @@ import { Component, Vue } from "vue-property-decorator";
 import VueRx from "vue-rx";
 import HelloWorld from "./components/HelloWorld.vue";
 import TeamBoard from "./components/TeamBoard.vue";
+import NameInput from "./components/NameInput.vue";
 import { IndividualWork } from "./system/IndividualWork";
 import { TeamSystem } from "./system/TeamSystem";
 import { Individual_within_Team } from "./system/Individual_within_Team";
@@ -47,6 +51,7 @@ window.things = individualWork; // play in the console
 @Component({
   components: {
     HelloWorld,
+    NameInput,
     TeamBoard,
   },
 })
@@ -92,6 +97,10 @@ body {
     rgba(225, 236, 245, 1) 50%,
     rgba(0, 212, 255, 1) 100%
   );
+}
+
+.one {
+  display: inline-block;
 }
 
 .title {
