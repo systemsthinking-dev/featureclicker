@@ -1,4 +1,4 @@
-import { Observable, ReplaySubject, Subject } from "rxjs";
+import { Observable, Observer, ReplaySubject, Subject } from "rxjs";
 import { catchError, filter, map } from "rxjs/operators";
 import { webSocket } from "rxjs/webSocket";
 
@@ -13,15 +13,21 @@ function isNotMessageToEveryone<U>(msg: U | MessageToEveryone): msg is U {
 }
 
 /**
- * Websocket Handling
- * T: the type that we send
- * U: the type we receive
- * @param websocketSubject
- * @param teamMemberId
- * @param yourName
- * @param secondsSinceBegin
+ * Websocket Handling. Declare a websocketSubject for the URL received.
+ * That websocket is expecting to talk to this app: https://github.com/aws-samples/simple-websockets-chat-app
+ * That app expects messages that look like MessageToEveryone, and then it echoes to all connections
+ * just the data part.
+ * 
+ * This function gives you the two sides -- an Observable to receive your messages, and an Observer to send them.
+ * 
+ * If the websocket fails, then this function wires up your sender to your receiver,
+ * so you'll get your own messages from then on. The fallback is, you're chatting to yourself.
+ * 
+ * Returned:
+ * - an observable that will give you the messages from the server, or your own messages if the server connection fails
+ * - an observer that, when you subscribe it to something, wraps up what it receives to send to the server.
  */
-export function wireUpTheWebsocket<U>(backendUrl: string): [Observable<U>, Subject<U>] {
+export function wireUpTheWebsocket<U>(backendUrl: string): [Observable<U>, Observer<U>] {
   const selfSubject = new ReplaySubject<MessageToEveryone>(1);
   const selfObservable: Observable<U> = selfSubject.pipe(map(mte => JSON.parse(mte.data)));
 
