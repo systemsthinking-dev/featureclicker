@@ -1,5 +1,5 @@
 import { Observable, Observer, ReplaySubject, Subject, merge, of } from "rxjs";
-import { catchError, filter, map, mapTo, } from "rxjs/operators";
+import { catchError, filter, map, mapTo, startWith, } from "rxjs/operators";
 import { webSocket } from "rxjs/webSocket";
 
 type MessageToEveryone = {
@@ -67,9 +67,10 @@ export function wireUpTheWebsocket<U>(backendUrl: string): [Observable<U>, Obser
     selfSubject.next(mfe); // backup in case the websocket goes down
   });
 
-  const connectionStatus: Observable<ConnectionStatus> = merge(of(ConnectionStatus.NotYetConnected),
-    openObserver.pipe(mapTo(ConnectionStatus.Connected)),
-    errorAlert.pipe(mapTo(ConnectionStatus.FailedConnection)));
+  const connectionStatus: Observable<ConnectionStatus> = merge(
+    eventsFrom.pipe(mapTo(ConnectionStatus.Connected)), // we get an event, must be OK
+    openObserver.pipe(mapTo(ConnectionStatus.Connected)), // we notice the socket was opened
+    errorAlert.pipe(mapTo(ConnectionStatus.FailedConnection))).pipe(startWith(ConnectionStatus.NotYetConnected));
 
   return [eventsFrom, eventsTo, connectionStatus];
 }
