@@ -4,8 +4,10 @@ import type { ValuePerSecond, SecondsSinceBegin } from "./IndividualWork";
 import { map, scan, startWith, withLatestFrom } from "rxjs/operators";
 import { v4 as uuid } from "uuid";
 import type { Individual_within_Team } from "./Individual_within_Team";
-import { wireUpTheWebsocket } from "./backendInterface";
+import { ConnectionStatus, wireUpTheWebsocket } from "./backendInterface";
 
+//export type TeamConnectionStatus = Connected | NotYetConnected | Failed
+export { ConnectionStatus } from "./backendInterface";
 export type TeamMemberScore = { teamMemberId: TeamMemberId; name: TeamMemberName; vps: ValuePerSecond }
 export type TeamMemberName = string;
 export type TeamMemberId = string;
@@ -30,8 +32,9 @@ export class TeamSystem {
   constructor(backendUrl: string, individualRelationship: Individual_within_Team) {
     const defaultName = "Fred";
 
-    const [eventsFromServer, eventsToServer] = wireUpTheWebsocket<TeamEvent>(backendUrl);
+    const [eventsFromServer, eventsToServer, connectionStatus] = wireUpTheWebsocket<TeamEvent>(backendUrl);
     this.eventsFromServer = eventsFromServer;
+    this.connectionStatus = connectionStatus;
 
     this.teamScores = this.eventsFromServer.pipe(scan((accum, e) => {
       console.log("I see an event: ", e);
@@ -69,6 +72,8 @@ export class TeamSystem {
       outgoingStatusReports,
     });
   }
+
+  public connectionStatus: Observable<ConnectionStatus>;
 
   public memberNameChangeEvent: Observer<MemberNameChangeEvent>;
 

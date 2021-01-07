@@ -1,6 +1,7 @@
 <template>
   <div class="team-board">
-    <div class="team-title">Team {{ teamName }}</div>
+    <div class="team-title" v-if="connected">Team {{ teamName }}</div>
+    <div class="team-title lack-of-team" v-else>working alone</div>
     <table>
       <thead>
         <tr>
@@ -19,18 +20,26 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { of, Observable } from "rxjs";
-import { TeamMemberId, TeamMemberScore } from "@/system/TeamSystem";
+import {
+  ConnectionStatus,
+  TeamMemberId,
+  TeamMemberScore,
+  TeamSystem,
+} from "@/system/TeamSystem";
 import { map } from "rxjs/operators";
 
 @Component<TeamBoard>({
   subscriptions() {
     return {
-      teammates: this.teamScores,
+      teammates: this.teamSystem.teamScores,
+      connected: this.teamSystem.connectionStatus.pipe(
+        map((status) => status === ConnectionStatus.Connected)
+      ),
     };
   },
 })
 export default class TeamBoard extends Vue {
-  @Prop({ required: true }) private teamScores!: Observable<TeamMemberScore[]>;
+  @Prop({ required: true }) private teamSystem!: TeamSystem;
 
   public teamName = "Woozles";
 
@@ -58,5 +67,9 @@ th {
 .team-title {
   font-weight: bolder;
   padding: 5px;
+}
+
+.lack-of-team {
+  color: red;
 }
 </style>

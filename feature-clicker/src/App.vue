@@ -5,7 +5,7 @@
         <div class="title">{{ msg }}</div>
         <NameInput v-stream:nameChange="teamSystem.memberNameChangeEvent" />
       </div>
-      <TeamBoard :teamScores="teamSystem.teamScores" />
+      <TeamBoard :teamSystem="teamSystem" />
       <HelloWorld :individualWork="individualWork" />
     </main>
 

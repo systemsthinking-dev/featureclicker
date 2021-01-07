@@ -1,5 +1,5 @@
-import { Observable, Observer, ReplaySubject, Subject } from "rxjs";
-import { catchError, filter, map } from "rxjs/operators";
+import { Observable, Observer, ReplaySubject, Subject, merge, of } from "rxjs";
+import { catchError, filter, map, mapTo, } from "rxjs/operators";
 import { webSocket } from "rxjs/webSocket";
 
 type MessageToEveryone = {
@@ -10,6 +10,10 @@ type MessageToEveryone = {
 function isNotMessageToEveryone<U>(msg: U | MessageToEveryone): msg is U {
   const te = msg as MessageToEveryone;
   return !(te.action === "sendmessage")
+}
+
+export enum ConnectionStatus {
+  Connected, NotYetConnected, FailedConnection
 }
 
 /**
@@ -27,20 +31,23 @@ function isNotMessageToEveryone<U>(msg: U | MessageToEveryone): msg is U {
  * - an observable that will give you the messages from the server, or your own messages if the server connection fails
  * - an observer that, when you subscribe it to something, wraps up what it receives to send to the server.
  */
-export function wireUpTheWebsocket<U>(backendUrl: string): [Observable<U>, Observer<U>] {
+export function wireUpTheWebsocket<U>(backendUrl: string): [Observable<U>, Observer<U>, Observable<ConnectionStatus>] {
   const selfSubject = new ReplaySubject<MessageToEveryone>(1);
   const selfObservable: Observable<U> = selfSubject.pipe(map(mte => JSON.parse(mte.data)));
+  const openObserver = new Subject<Event>();
 
   // we receive U from the websocket, but we always send MessageToEveryone
-  const websocketSubject: Subject<U | MessageToEveryone> = webSocket(backendUrl);
+  const websocketSubject: Subject<U | MessageToEveryone> = webSocket({ url: backendUrl, openObserver });
   // this is for debugging. However there is always a chance that removing
   // it will change behavior: it's the first subscribe that triggers connection.
   websocketSubject.subscribe((m) =>
     console.log("Received from websocket: " + JSON.stringify(m))
   );
 
+  const errorAlert = new Subject<Error>();
   const eventsFrom: Observable<U> = websocketSubject.pipe(
     catchError(e => {
+      errorAlert.next(e);
       console.log("oops, websocket failure: ", e);
       return selfObservable;
     }), filter(isNotMessageToEveryone));
@@ -48,16 +55,21 @@ export function wireUpTheWebsocket<U>(backendUrl: string): [Observable<U>, Obser
   const eventsTo = new Subject<U>(); // captured in returned function
 
   // any event in the myEvents stream gets sent to the server along with metadata.
-  // someday, break this websocket stuff into a different file. it is not core domain, only supporting
-  eventsTo.subscribe((myTeamEvent: U) => {
+  eventsTo.pipe(map(u => {
     const mfe: MessageToEveryone = {
       action: "sendmessage",
-      data: JSON.stringify(myTeamEvent)
+      data: JSON.stringify(u)
     };
     console.log("Sending: ", mfe);
+    return mfe;
+  })).subscribe(mfe => {
     websocketSubject.next(mfe);
     selfSubject.next(mfe); // backup in case the websocket goes down
   });
 
-  return [eventsFrom, eventsTo];
+  const connectionStatus: Observable<ConnectionStatus> = merge(of(ConnectionStatus.NotYetConnected),
+    openObserver.pipe(mapTo(ConnectionStatus.Connected)),
+    errorAlert.pipe(mapTo(ConnectionStatus.FailedConnection)));
+
+  return [eventsFrom, eventsTo, connectionStatus];
 }
