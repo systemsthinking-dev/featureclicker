@@ -1,19 +1,22 @@
 <template>
   <div class="team-board">
-    <div class="team-title" v-if="connected">Team {{ teamName }}</div>
-    <div class="team-title lack-of-team" v-else>working alone</div>
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">name</th>
-          <th scope="col">vps</th>
+    <div class="team-stats">
+      <div class="team-title" v-if="connected">Team {{ teamName }}</div>
+      <div class="team-title lack-of-team" v-else>working alone</div>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">name</th>
+            <th scope="col">vps</th>
+          </tr>
+        </thead>
+        <tr v-for="(mate, id) of teammates" :key="id">
+          <td>{{ mate.name }}</td>
+          <td>{{ mate.vps }}</td>
         </tr>
-      </thead>
-      <tr v-for="(mate, id) of teammates" :key="id">
-        <td>{{ mate.name }}</td>
-        <td>{{ mate.vps }}</td>
-      </tr>
-    </table>
+      </table>
+    </div>
+    <button>Report</button>
   </div>
 </template>
 
@@ -68,6 +71,24 @@ th {
 .team-title {
   font-weight: bolder;
   padding: 5px;
+}
+
+.team-stats {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+button {
+  margin: 10px;
+  padding: 10px;
+  height: 5em;
+  width: 5em;
+  font-weight: bold;
+  border-width: 2px;
+  background-color: coral;
+}
+button:active {
+  background-color: purple;
 }
 
 .lack-of-team {
