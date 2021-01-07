@@ -62,6 +62,7 @@ th {
   padding: 5px;
   display: inline-block;
   background-color: white;
+  vertical-align: middle;
 }
 
 .team-title {

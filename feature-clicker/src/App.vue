@@ -101,6 +101,7 @@ body {
 
 .one {
   display: inline-block;
+  vertical-align: middle;
 }
 
 .title {
