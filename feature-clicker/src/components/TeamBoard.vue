@@ -16,7 +16,7 @@
         </tr>
       </table>
     </div>
-    <button>Report</button>
+    <button v-stream:click.stop="teamSystem.triggerReport">Report</button>
   </div>
 </template>
 

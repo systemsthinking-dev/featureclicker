@@ -1,9 +1,9 @@
 /* eslint-disable */
-import { BehaviorSubject, Observable, Observer, of, Subject } from "rxjs";
+import { Observable, Observer, of, Subject } from "rxjs";
 import type { ValuePerSecond, SecondsSinceBegin } from "./IndividualWork";
 import { map, scan, startWith, withLatestFrom } from "rxjs/operators";
 import { v4 as uuid } from "uuid";
-import type { Individual_within_Team } from "./Individual_within_Team";
+import type { Individual_within_Team, StatusReport } from "./Individual_within_Team";
 import { ConnectionStatus, wireUpTheWebsocket } from "./backendInterface";
 
 //export type TeamConnectionStatus = Connected | NotYetConnected | Failed
@@ -12,7 +12,7 @@ export type TeamMemberScore = { teamMemberId: TeamMemberId; name: TeamMemberName
 export type TeamMemberName = string;
 export type TeamMemberId = string;
 export type TeamStatusSummary = Record<TeamMemberId, StatusReport & { name: TeamMemberName }>;
-export type StatusReport = { tick: SecondsSinceBegin; vps: ValuePerSecond } // temporary
+export type SendStatusReportPlease = "tps";
 export type TeamEvent = {
   from: {
     teamMemberId: TeamMemberId;
@@ -56,22 +56,29 @@ export class TeamSystem {
     /**
      * status reports go out
      */
+
+    const triggerReport = new Subject<SendStatusReportPlease>();
+    this.triggerReport = triggerReport;
+    const individualStatus = new Subject<StatusReport>();
     const teamMemberId = this.teamMemberId;
-    const outgoingStatusReports = new Subject<StatusReport>();
     // wrap status report in message details, so it's the same format we expect to receive
-    outgoingStatusReports.pipe(withLatestFrom(memberName),
-      map(([myEvent, yourName]) => {
+    triggerReport.pipe(withLatestFrom(memberName, individualStatus),
+      map(([_tps, yourName, myEvent]) => {
         const te: TeamEvent = { from: { teamMemberId, teamMemberName: yourName }, about: myEvent };
         return te;
       }))
       .subscribe(eventsToServer)
 
-
-
     individualRelationship.hookUpTeam({
-      outgoingStatusReports,
+      individualStatus
     });
+
+    // send the hello statusreport
+    this.triggerReport.next("tps");
+
   }
+
+  public triggerReport: Observer<SendStatusReportPlease>;
 
   public connectionStatus: Observable<ConnectionStatus>;
 

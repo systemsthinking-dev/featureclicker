@@ -2,12 +2,10 @@
 import { Subject, BehaviorSubject, Observable, timer } from "rxjs";
 import { scan, delay, first, mergeMap, startWith, withLatestFrom, map } from "rxjs/operators";
 import type { Individual_within_Team } from "./Individual_within_Team";
-import type { StatusReport } from "./TeamSystem";
 
 console.log("Does this happen?");
 
 export type ClickOnFeatureWork = { event: Event };
-export type SendStatusReportPlease = "tps";
 export type SecondsSinceBegin = number;
 export type ValueCreated = number;
 export type ValuePerSecond = number;
@@ -15,7 +13,6 @@ export type ValuePerSecond = number;
 export class IndividualWork {
   constructor(teamRelationship: Individual_within_Team) {
     this.featureWorkDone = new Subject<ClickOnFeatureWork>();
-    this.triggerReport = new Subject<SendStatusReportPlease>();
     this.capabilityStock = new BehaviorSubject<ValuePerSecond>(0);
     this.totalValueCreated = new BehaviorSubject<ValueCreated>(0);
     this.secondsSinceBegin = this.featureWorkDone.pipe(
@@ -36,19 +33,12 @@ export class IndividualWork {
 
     valueFlowingFromCapabilities.pipe(scan((accum, moreValue) => accum + moreValue, 0)).subscribe(this.totalValueCreated);
 
-    const statusReports = new Subject<StatusReport>();
     teamRelationship.hookUpIndividual({
-      statusReports
+      clock: this.secondsSinceBegin, vps: this.capabilityStock
     });
-    // send the hello statusreport
-    statusReports.next({ tick: 0, vps: 0 });
-    this.triggerReport.pipe(withLatestFrom(this.secondsSinceBegin, this.capabilityStock),
-      map(([_tps, tick, vps]) => ({ tick, vps }))).subscribe(statusReports);
   }
 
   public featureWorkDone: Subject<ClickOnFeatureWork>;
-
-  public triggerReport: Subject<SendStatusReportPlease>;
 
   public capabilityStock: BehaviorSubject<ValuePerSecond>; // TODO: I think all these should be exposed as Observable
 

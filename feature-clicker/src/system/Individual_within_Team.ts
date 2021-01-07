@@ -4,29 +4,40 @@
  * this is an edge. Settling for underscores.
  */
 
-import { Observable, Observer, ReplaySubject } from "rxjs";
-import { StatusReport } from "./TeamSystem";
+import { Observable, Observer, Subject } from "rxjs";
+import { map, withLatestFrom, startWith } from "rxjs/operators";
+import { SecondsSinceBegin, ValuePerSecond } from "./IndividualWork";
+
+export type StatusReport = { tick: SecondsSinceBegin; vps: ValuePerSecond } // temporary
 
 export type IndividualInterface = {
-  statusReports: Observable<StatusReport>;
+  clock: Observable<SecondsSinceBegin>;
+  vps: Observable<ValuePerSecond>;
 }
 
 export type TeamInterface = {
-  outgoingStatusReports: Observer<StatusReport>;
+  individualStatus: Observer<StatusReport>;
 }
 
 export class Individual_within_Team {
-  public statusReportSubject = new ReplaySubject<StatusReport>(1);
+  public clock = new Subject<SecondsSinceBegin>();
+  public vps = new Subject<ValuePerSecond>();
 
   constructor() {
-    this.statusReportSubject.subscribe(s => console.log("There is a status report", s));
+    this.clock.next(0);
+    this.vps.next(0);
   }
 
   public hookUpIndividual(individual: IndividualInterface) {
-    individual.statusReports.subscribe(this.statusReportSubject);
+    individual.clock.subscribe(this.clock);
+    individual.vps.subscribe(this.vps);
   }
 
   public hookUpTeam(team: TeamInterface) {
-    this.statusReportSubject.subscribe(team.outgoingStatusReports);
+    this.clock.pipe(
+      withLatestFrom(this.vps),
+      map(([tick, vps]) => ({ tick, vps })),
+      startWith({ tick: 0, vps: 0 }))
+      .subscribe(team.individualStatus);
   }
 }

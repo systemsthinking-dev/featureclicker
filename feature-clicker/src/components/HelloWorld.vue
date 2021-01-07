@@ -17,14 +17,12 @@ import type { IndividualWork } from "../system/IndividualWork";
 import DoFeatureWork from "./DoFeatureWork.vue";
 import CapabilityStock from "./CapabilityStock.vue";
 import TotalValueCreated from "./TotalValueCreated.vue";
-import SendStatusReport from "./SendStatusReport.vue";
 
 @Component({
   components: {
     DoFeatureWork,
     CapabilityStock,
     TotalValueCreated,
-    SendStatusReport,
   },
 })
 export default class HelloWorld extends Vue {
