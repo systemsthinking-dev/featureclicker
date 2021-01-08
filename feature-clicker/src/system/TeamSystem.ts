@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { Observable, Observer, of, Subject } from "rxjs";
+import { combineLatest, Observable, Observer, of, Subject } from "rxjs";
 import type { ValuePerSecond, SecondsSinceBegin } from "./IndividualWork";
 import { map, scan, startWith, withLatestFrom } from "rxjs/operators";
 import { v4 as uuid } from "uuid";
@@ -19,6 +19,10 @@ export type TeamEvent = {
     teamMemberName: TeamMemberName;
   }; about: StatusReport;
 } // what we receive
+
+export enum StatusStatus {
+  UpToDate, OutOfDate
+}
 
 // this is a UI detail, but I don't know how else to get the events right now
 type MemberNameChangeEvent = {
@@ -63,23 +67,43 @@ export class TeamSystem {
     const individualStatus = new Subject<StatusReport>();
     const teamMemberId = this.teamMemberId;
     // wrap status report in message details, so it's the same format we expect to receive
-    triggerReport.pipe(withLatestFrom(memberName, individualStatus),
+    const reportsToSend = triggerReport.pipe(withLatestFrom(memberName, individualStatus),
       map(([_tps, yourName, myEvent]) => {
         const te: TeamEvent = { from: { teamMemberId, teamMemberName: yourName }, about: myEvent };
         return te;
       }))
-      .subscribe(eventsToServer)
+    reportsToSend.subscribe(eventsToServer)
+
+    // notice when the individual status report is newer than the last one sent
+    this.statusUptodateness = combineLatest([individualStatus,
+      reportsToSend.pipe(startWith(null)), // otherwise this observable won't fire until they all have a value
+      memberName]).pipe(
+        map(([currentStatus, lastMessageSent, latestName]) => {
+          if (lastMessageSent === null) {
+            // if a report hasn't fired yet, it's definitely out of date
+            return StatusStatus.OutOfDate;
+          }
+          const lastSentStatus = lastMessageSent.about;
+          if (currentStatus.vps !== lastSentStatus.vps) {
+            return StatusStatus.OutOfDate; // something has changed since it was sent
+          }
+          if (latestName !== lastMessageSent.from.teamMemberName) {
+            return StatusStatus.OutOfDate; // I changed my name since last send
+          }
+          return StatusStatus.UpToDate; // well, looks like they're close enough
+        }));
 
     individualRelationship.hookUpTeam({
       individualStatus
     });
 
-    // send the hello statusreport
-    this.triggerReport.next("tps");
+    triggerReport.next("tps");
 
   }
 
   public triggerReport: Observer<SendStatusReportPlease>;
+
+  public statusUptodateness: Observable<StatusStatus>;
 
   public connectionStatus: Observable<ConnectionStatus>;
 

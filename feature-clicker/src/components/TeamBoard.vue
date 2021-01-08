@@ -16,7 +16,12 @@
         </tr>
       </table>
     </div>
-    <button v-stream:click.stop="teamSystem.triggerReport">Report</button>
+    <button
+      v-stream:click.stop="teamSystem.triggerReport"
+      :class="{ needed: reportNeeded }"
+    >
+      Report
+    </button>
   </div>
 </template>
 
@@ -25,6 +30,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { of, Observable } from "rxjs";
 import {
   ConnectionStatus,
+  StatusStatus,
   TeamMemberId,
   TeamMemberScore,
   TeamSystem,
@@ -42,6 +48,9 @@ import { map } from "rxjs/operators";
       ),
       connected: this.teamSystem.connectionStatus.pipe(
         map((status) => status === ConnectionStatus.Connected)
+      ),
+      reportNeeded: this.teamSystem.statusUptodateness.pipe(
+        map((s) => s === StatusStatus.OutOfDate)
       ),
     };
   },
@@ -90,6 +99,8 @@ button {
   width: 5em;
   font-weight: bold;
   border-width: 2px;
+}
+button.needed {
   background-color: coral;
 }
 button:active {
