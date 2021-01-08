@@ -43,6 +43,7 @@ import { map } from "rxjs/operators";
       teammates: this.teamSystem.teamScores.pipe(
         map((s) => {
           console.log("Noticed; ", s);
+          console.log("teamsystem is ", this.teamSystem);
           return s;
         })
       ),
