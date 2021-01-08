@@ -7,7 +7,7 @@
       </div>
       <TeamBoard :teamSystem="teamSystem" />
       <HelloWorld :individualWork="individualWork" />
-      <TimeGraph />
+      <TimeGraph :statusEvents="teamSystem.eventsFromServer" />
     </main>
 
     <a href="https://systemsthinking.dev" target="_blank">

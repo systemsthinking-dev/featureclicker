@@ -3,24 +3,33 @@
 </template>
 
 <script lang=ts>
-import { Component, Vue } from "vue-property-decorator";
+import { TeamEvent } from "@/system/TeamSystem";
+import { Observable } from "rxjs";
+import { scan } from "rxjs/operators";
+import { Component, Prop, Vue } from "vue-property-decorator";
 
-@Component
+@Component<TimeGraph>({
+  subscriptions() {
+    return {
+      // chartData: this.statusEvents.pipe(
+      //   scan((eventsToGraph, e) => {
+      //     return eventsToGraph;
+      //   }),
+      // ),
+    };
+  },
+})
 export default class TimeGraph extends Vue {
+  @Prop({ required: true }) statusEvents!: Observable<TeamEvent>;
+
   get chartData() {
     return [
       {
-        name: "Workout",
+        name: "vps",
         data: {
-          "2017-01-01 00:00:00 -0800": 3,
-          "2017-01-02 00:00:00 -0800": 4,
-        },
-      },
-      {
-        name: "Call parents",
-        data: {
-          "2017-01-01 00:00:00 -0800": 5,
-          "2017-01-02 00:00:00 -0800": 3,
+          0: 0,
+          1: 1,
+          4: 10,
         },
       },
     ];
