@@ -34,9 +34,10 @@ export class Individual_within_Team {
   }
 
   public hookUpTeam(team: TeamInterface) {
-    this.clock.pipe(
-      withLatestFrom(this.vps),
-      map(([tick, vps]) => ({ tick, vps })),
+    // fire whenever vps changes
+    this.vps.pipe(
+      withLatestFrom(this.clock), // don't fire every tick, just grab the latest
+      map(([vps, tick]) => ({ tick, vps })),
       startWith({ tick: 0, vps: 0 }))
       .subscribe(team.individualStatus);
   }
