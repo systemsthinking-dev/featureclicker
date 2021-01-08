@@ -10,6 +10,11 @@ import { SecondsSinceBegin, ValuePerSecond } from "./IndividualWork";
 
 export type StatusReport = { tick: SecondsSinceBegin; vps: ValuePerSecond } // temporary
 
+export function isDifferentStatus(a: StatusReport, b: StatusReport): boolean {
+  // the tick doesn't matter
+  return a.vps !== b.vps;
+}
+
 export type IndividualInterface = {
   clock: Observable<SecondsSinceBegin>;
   vps: Observable<ValuePerSecond>;

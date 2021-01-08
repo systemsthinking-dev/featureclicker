@@ -1,9 +1,9 @@
 /* eslint-disable */
 import { combineLatest, Observable, Observer, of, Subject } from "rxjs";
-import type { ValuePerSecond, SecondsSinceBegin } from "./IndividualWork";
+import type { ValuePerSecond } from "./IndividualWork";
 import { map, scan, startWith, withLatestFrom } from "rxjs/operators";
 import { v4 as uuid } from "uuid";
-import type { Individual_within_Team, StatusReport } from "./Individual_within_Team";
+import { Individual_within_Team, isDifferentStatus, StatusReport } from "./Individual_within_Team";
 import { ConnectionStatus, wireUpTheWebsocket } from "./backendInterface";
 
 //export type TeamConnectionStatus = Connected | NotYetConnected | Failed
@@ -84,7 +84,7 @@ export class TeamSystem {
             return StatusStatus.OutOfDate;
           }
           const lastSentStatus = lastMessageSent.about;
-          if (currentStatus.vps !== lastSentStatus.vps) {
+          if (isDifferentStatus(currentStatus, lastSentStatus)) {
             return StatusStatus.OutOfDate; // something has changed since it was sent
           }
           if (latestName !== lastMessageSent.from.teamMemberName) {
