@@ -38,8 +38,9 @@ export class TeamSystem {
 
     this.teamScores = this.eventsFromServer.pipe(scan((accum, e) => {
       console.log("I see an event: ", e);
-      accum[e.from.teamMemberId] = { name: e.from.teamMemberName, ...e.about };
-      return accum;
+      const newbie = { ...accum };
+      newbie[e.from.teamMemberId] = { name: e.from.teamMemberName, ...e.about };
+      return newbie;
     }, {} as TeamStatusSummary)
     );
 

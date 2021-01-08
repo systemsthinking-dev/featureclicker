@@ -34,7 +34,12 @@ import { map } from "rxjs/operators";
 @Component<TeamBoard>({
   subscriptions() {
     return {
-      teammates: this.teamSystem.teamScores,
+      teammates: this.teamSystem.teamScores.pipe(
+        map((s) => {
+          console.log("Noticed; ", s);
+          return s;
+        })
+      ),
       connected: this.teamSystem.connectionStatus.pipe(
         map((status) => status === ConnectionStatus.Connected)
       ),
