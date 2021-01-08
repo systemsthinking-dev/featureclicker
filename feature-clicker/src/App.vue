@@ -7,6 +7,7 @@
       </div>
       <TeamBoard :teamSystem="teamSystem" />
       <HelloWorld :individualWork="individualWork" />
+      <TimeGraph />
     </main>
 
     <a href="https://systemsthinking.dev" target="_blank">
@@ -31,11 +32,15 @@ import VueRx from "vue-rx";
 import HelloWorld from "./components/HelloWorld.vue";
 import TeamBoard from "./components/TeamBoard.vue";
 import NameInput from "./components/NameInput.vue";
+import TimeGraph from "./components/TimeGraph.vue";
 import { IndividualWork } from "./system/IndividualWork";
 import { TeamSystem } from "./system/TeamSystem";
 import { Individual_within_Team } from "./system/Individual_within_Team";
+import Chartkick from "vue-chartkick";
+import Chart from "chart.js";
 
 Vue.use(VueRx);
+Vue.use(Chartkick.use(Chart));
 
 // set up the websockets
 const backendUrl = process.env.VUE_APP_BACKEND;
@@ -53,6 +58,7 @@ window.things = individualWork; // play in the console
     HelloWorld,
     NameInput,
     TeamBoard,
+    TimeGraph,
   },
 })
 export default class App extends Vue {
