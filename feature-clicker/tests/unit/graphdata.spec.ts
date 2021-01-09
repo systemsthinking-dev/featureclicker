@@ -20,6 +20,14 @@ function toGraphData(accum: DataAccumulation): TimeGraphData {
 }
 
 describe("converting status reports into graph data", () => {
+  it("makes an empty graph for no data", () => {
+    const result = toGraphData([]);
+    const emptyGraph = [{
+      name: "vps",
+      data: {},
+    }];
+    assert.deepEqual(result, emptyGraph);
+  });
   it("does a simple thing", () => {
     const inputEvents: StatusReport[] = [
       { "tick": 0, "vps": 0 },
