@@ -1,22 +1,7 @@
+import { accumulateEvents, emptyAccumulator, TimeGraphData, toGraphData } from "@/components/support/graphdata";
 import { StatusReport } from "@/system/Individual_within_Team";
 import { assert } from "chai";
 
-type TimeGraphData = [{ name: "vps", data: Record<number, number> }];
-
-type DataAccumulation = Record<number, number>;
-
-const emptyAccumulator: DataAccumulation = {};
-
-function accumulateEvents(accum: DataAccumulation, event: StatusReport): DataAccumulation {
-  accum[event.tick] = event.vps;
-  return accum;
-}
-
-function toGraphData(accum: DataAccumulation): TimeGraphData {
-  return [{
-    name: "vps", data: accum
-  }];
-}
 
 describe("converting status reports into graph data", () => {
   it("makes an empty graph for no data", () => {
