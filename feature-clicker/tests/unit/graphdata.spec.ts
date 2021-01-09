@@ -10,7 +10,13 @@ function accumulateEvents(accum: DataAccumulation, event: StatusReport): DataAcc
 }
 
 function toGraphData(accum: DataAccumulation): TimeGraphData {
-  return [{ name: "vps", data: {} }];
+  return [{
+    name: "vps", data: {
+      0: 0,
+      1: 1,
+      4: 10,
+    }
+  }];
 }
 
 describe("converting status reports into graph data", () => {
