@@ -7,8 +7,39 @@
 <script lang=ts>
 import { Component, Prop, Vue } from "vue-property-decorator";
 import Chart, { ChartConfiguration, ChartData, ChartOptions } from "chart.js";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
-@Component({
+// https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+let addOpacity = function (hex: string, opacity: string) {
+  let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? "rgba(" +
+        parseInt(result[1], 16) +
+        ", " +
+        parseInt(result[2], 16) +
+        ", " +
+        parseInt(result[3], 16) +
+        ", " +
+        opacity +
+        ")"
+    : hex;
+};
+
+const defaultColors = ["#42DD42", "#33AA33"];
+
+function formatChartData(cd: ChartData) {
+  if (!cd) {
+    return cd;
+  }
+  cd.datasets?.forEach((ds, i) => {
+    ds.borderColor = defaultColors[i];
+    ds.backgroundColor = addOpacity(defaultColors[i], "0.5");
+  });
+  return cd;
+}
+
+@Component<LineChart>({
   data() {
     return {
       _chart: null, // not sure why
@@ -20,7 +51,11 @@ export default class LineChart extends Vue {
 
   created() {
     console.log("CREATED was called");
-    this.$watch("chartData", this.dataHandler);
+    this.$watch("formattedChartData", this.dataHandler);
+  }
+
+  get formattedChartData() {
+    return formatChartData(this.chartData);
   }
 
   get options(): ChartOptions {
@@ -69,7 +104,7 @@ export default class LineChart extends Vue {
     const canvas: HTMLCanvasElement = this.$refs.canvas as HTMLCanvasElement;
     const chartConfiguration: ChartConfiguration = {
       type: "line",
-      data: this.chartData,
+      data: this.formattedChartData,
       options: this.options,
     };
     this.$data._chart = new Chart(canvas.getContext("2d")!, chartConfiguration);
@@ -156,31 +191,13 @@ export default class LineChart extends Vue {
     }
   }
 }
-
-//   dataset { backgroundColor: chart.options.colors || defaultColors
-const defaultColors = [
-  "#3366CC",
-  "#DC3912",
-  "#FF9900",
-  "#109618",
-  "#990099",
-  "#3B3EAC",
-  "#0099C6",
-  "#DD4477",
-  "#66AA00",
-  "#B82E2E",
-  "#316395",
-  "#994499",
-  "#22AA99",
-  "#AAAA11",
-  "#6633CC",
-  "#E67300",
-  "#8B0707",
-  "#329262",
-  "#5574A6",
-  "#651067",
-];
 </script>
 
 <style scoped>
+canvas {
+  background: white;
+  margin-top: 10px;
+  border: 1px black solid;
+  border-radius: 10px;
+}
 </style>

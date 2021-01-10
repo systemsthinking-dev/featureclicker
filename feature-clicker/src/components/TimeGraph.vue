@@ -41,5 +41,6 @@ export default class TimeGraph extends Vue {
 <style scoped>
 div {
   margin: auto;
+  width: 80%;
 }
 </style>
