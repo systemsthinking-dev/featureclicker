@@ -24,7 +24,7 @@
 			"</template>",
 			"",
 			"<script lang=ts>",
-			"import { Component, Vue } from \"vue-property-decorator\";",
+			"import { Component, Prop, Vue } from \"vue-property-decorator\";",
 			"",
 			"@Component",
 			"export default class $1 extends Vue {}",
@@ -35,6 +35,11 @@
 			""
 		],
 		"description": "a vue component thinger"
+	},
+	"prop for a vue component": { // this one does not work, sadly. Maybe after a restart?
+		"scope": "vue,typescript",
+		"prefix": "prop",
+		"body": "@Prop({ required: true }) private $1!: $2;"
 	},
 	"mocha test": {
 		"scope": "typescript",
