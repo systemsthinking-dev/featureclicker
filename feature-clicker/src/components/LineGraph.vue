@@ -24,11 +24,39 @@ export default class LineChart extends Vue {
   }
 
   get options(): ChartOptions {
+    // somewhat pilfered from chartkick.js
     return {
       scales: {
         xAxes: [
           {
             type: "linear",
+            gridLines: {
+              drawOnChartArea: false,
+            },
+            scaleLabel: {
+              display: true,
+              labelString: "time (seconds) since you started work",
+              fontSize: 16,
+              // fontStyle: "bold",
+              fontColor: "#333",
+            },
+            time: {},
+            ticks: { min: 0 },
+          },
+        ],
+        yAxes: [
+          {
+            ticks: {
+              min: 0,
+              maxTicksLimit: 4,
+            },
+            scaleLabel: {
+              display: true,
+              labelString: "capability units",
+              fontSize: 16,
+              // fontStyle: "bold",
+              fontColor: "#333",
+            },
           },
         ],
       },
@@ -112,28 +140,46 @@ export default class LineChart extends Vue {
 
         if (newData.hasOwnProperty("labels")) {
           chart.data.labels = newData.labels;
-          this.$emit("labels:update");
         }
         chart.update();
-        this.$emit("chart:update");
       } else {
         if (chart) {
           chart.destroy();
-          this.$emit("chart:destroy");
         }
         this.renderChart();
-        this.$emit("chart:render");
       }
     } else {
       if (this.$data._chart) {
         this.$data._chart.destroy();
-        this.$emit("chart:destroy");
       }
       this.renderChart();
-      this.$emit("chart:render");
     }
   }
 }
+
+//   dataset { backgroundColor: chart.options.colors || defaultColors
+const defaultColors = [
+  "#3366CC",
+  "#DC3912",
+  "#FF9900",
+  "#109618",
+  "#990099",
+  "#3B3EAC",
+  "#0099C6",
+  "#DD4477",
+  "#66AA00",
+  "#B82E2E",
+  "#316395",
+  "#994499",
+  "#22AA99",
+  "#AAAA11",
+  "#6633CC",
+  "#E67300",
+  "#8B0707",
+  "#329262",
+  "#5574A6",
+  "#651067",
+];
 </script>
 
 <style scoped>

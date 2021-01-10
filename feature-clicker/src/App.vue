@@ -10,19 +10,21 @@
       <TimeGraph :statusEvents="teamSystem.eventsFromServer" />
     </main>
 
-    <a href="https://systemsthinking.dev" target="_blank">
-      <img
-        alt="SystemsThinking.dev logo"
-        class="stdev-logo"
-        src="./assets/logo.png"
-      />
-    </a>
-    <a
-      href="https://github.com/systemsthinking-dev/featureclicker"
-      target="_blank"
-    >
-      <img alt="GitHub" class="github-logo" src="./assets/GitHub_Logo.png" />
-    </a>
+    <footer>
+      <a href="https://systemsthinking.dev" target="_blank">
+        <img
+          alt="SystemsThinking.dev logo"
+          class="stdev-logo"
+          src="./assets/logo.png"
+        />
+      </a>
+      <a
+        href="https://github.com/systemsthinking-dev/featureclicker"
+        target="_blank"
+      >
+        <img alt="GitHub" class="github-logo" src="./assets/GitHub_Logo.png" />
+      </a>
+    </footer>
   </div>
 </template>
 
@@ -104,6 +106,10 @@ body {
 
 .one {
   display: inline-block;
+  vertical-align: middle;
+}
+
+footer a {
   vertical-align: middle;
 }
 
