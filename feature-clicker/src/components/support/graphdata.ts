@@ -1,5 +1,5 @@
 import { StatusReport } from "@/system/Individual_within_Team";
-import { ChartData, ChartDataSets, ChartPoint } from "chart.js";
+import { ChartDataSets, ChartPoint } from "chart.js";
 
 export type TimeGraphData = [ChartDataSets];
 
@@ -12,9 +12,8 @@ export function accumulateEvents(accum: DataAccumulation, event: StatusReport): 
   return accum;
 }
 
-export function toGraphData(accum: DataAccumulation): ChartData {
-  return {
-    labels: ["vps"],
-    datasets: [{ xAxisID: "seconds since you started work", data: accum }]
-  };
+export function toGraphData(accum: DataAccumulation): TimeGraphData {
+  return [{
+    label: "vps", data: accum
+  }];
 }

@@ -36,8 +36,11 @@ import TimeGraph from "./components/TimeGraph.vue";
 import { IndividualWork } from "./system/IndividualWork";
 import { TeamSystem } from "./system/TeamSystem";
 import { Individual_within_Team } from "./system/Individual_within_Team";
+import Chartkick from "vue-chartkick";
+import Chart from "chart.js";
 
 Vue.use(VueRx);
+Vue.use(Chartkick.use(Chart));
 
 // set up the websockets
 const backendUrl = process.env.VUE_APP_BACKEND;
