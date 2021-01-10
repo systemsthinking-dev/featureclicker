@@ -4,7 +4,7 @@
  * this is an edge. Settling for underscores.
  */
 
-import { Observable, Observer, Subject } from "rxjs";
+import { combineLatest, merge, Observable, Observer, Subject } from "rxjs";
 import { map, withLatestFrom, startWith } from "rxjs/operators";
 import { SecondsSinceBegin, ValuePerSecond } from "./IndividualWork";
 
@@ -39,9 +39,8 @@ export class Individual_within_Team {
   }
 
   public hookUpTeam(team: TeamInterface) {
-    // fire whenever vps changes
-    this.vps.pipe(
-      withLatestFrom(this.clock), // don't fire every tick, just grab the latest
+    // fire whenever vps changes or the clock ticks
+    combineLatest([this.vps, this.clock]).pipe(
       map(([vps, tick]) => ({ tick, vps })),
       startWith({ tick: 0, vps: 0 }))
       .subscribe(team.individualStatus);
