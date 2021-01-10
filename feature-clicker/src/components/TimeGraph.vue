@@ -1,6 +1,6 @@
 <template>
   <div>
-    <line-chart width="80%" :data="chartData" />
+    <StupidLineGraph :data="chartData" />
   </div>
 </template>
 
@@ -14,8 +14,12 @@ import {
   emptyAccumulator,
   toGraphData,
 } from "./support/graphdata";
+import StupidLineGraph from "./StupidLineGraph.vue";
 
 @Component<TimeGraph>({
+  components: {
+    StupidLineGraph,
+  },
   subscriptions() {
     return {
       chartData: this.statusEvents.pipe(
@@ -36,6 +40,7 @@ export default class TimeGraph extends Vue {
 
 <style scoped>
 div {
+  width: 80%;
   margin: auto;
 }
 </style>
