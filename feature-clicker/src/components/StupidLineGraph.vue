@@ -1,11 +1,10 @@
 <script lang="ts">
-import Vue from "vue";
-import { Component, Prop } from "vue-property-decorator";
 import type { ChartData } from "chart.js";
 import { Line } from "vue-chartjs";
+import { Component, Prop, Vue } from "vue-property-decorator";
 
-@Component({ mixins: [Line] })
-export default class StupidLineGraph extends Vue {
+@Component({})
+export default class StupidLineGraph extends Line {
   @Prop({ required: true }) chartData!: ChartData;
 
   get options() {
