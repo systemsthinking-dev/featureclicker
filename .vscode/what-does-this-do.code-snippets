@@ -38,8 +38,12 @@
 	},
 	"prop for a vue component": { // this one does not work, sadly. Maybe after a restart?
 		"scope": "vue,typescript",
-		"prefix": "prop",
-		"body": "@Prop({ required: true }) private $1!: $2;"
+		"prefix": "prop-for-vue",
+		"body": [
+			"@Prop({ required: true }) private $1!: $2;",
+			"$0"
+		],
+		"description": "I wish this worked"
 	},
 	"mocha test": {
 		"scope": "typescript",

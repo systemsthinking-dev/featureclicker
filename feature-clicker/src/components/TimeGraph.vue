@@ -5,10 +5,10 @@
 </template>
 
 <script lang=ts>
-import { TeamEvent } from "@/system/TeamSystem";
+import { TeamEvent, TeamMemberId } from "@/system/TeamSystem";
 import { ChartData } from "chart.js";
 import { Observable } from "rxjs";
-import { map, scan } from "rxjs/operators";
+import { filter, map, scan } from "rxjs/operators";
 import { Component, Prop, Vue } from "vue-property-decorator";
 import LineChart from "./LineGraph.vue";
 import {
@@ -24,6 +24,7 @@ import {
   subscriptions() {
     return {
       chartData: this.statusEvents.pipe(
+        filter((te) => te.from.teamMemberId === this.myTeamMemberId),
         map((te) => te.about),
         scan(accumulateEvents, emptyAccumulator),
         map(toGraphData)
@@ -32,6 +33,7 @@ import {
   },
 })
 export default class TimeGraph extends Vue {
+  @Prop({ required: true }) myTeamMemberId!: TeamMemberId;
   @Prop({ required: true }) statusEvents!: Observable<TeamEvent>;
 
   private chartData!: Observable<ChartData>;

@@ -7,7 +7,10 @@
       </div>
       <TeamBoard :teamSystem="teamSystem" />
       <HelloWorld :individualWork="individualWork" />
-      <TimeGraph :statusEvents="teamSystem.eventsFromServer" />
+      <TimeGraph
+        :statusEvents="teamSystem.eventsFromServer"
+        :myTeamMemberId="teamSystem.teamMemberId"
+      />
     </main>
 
     <footer>
