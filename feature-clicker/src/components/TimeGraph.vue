@@ -1,6 +1,6 @@
 <template>
   <div>
-    <StupidLineGraph :data="chartData" />
+    <StupidLineGraph :chartData="chartData" />
   </div>
 </template>
 
