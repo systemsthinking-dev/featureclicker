@@ -14,7 +14,7 @@ describe("converting status reports into graph data", () => {
   });
   it("does a simple thing", () => {
     const inputEvents: StatusReport[] = [
-      { "tick": 0, "vps": 0 },
+      { tick: 0, vps: 0 },
       { tick: 1, vps: 1 },
       { tick: 4, vps: 10 }];
     const accumulated = inputEvents.reduce(accumulateEvents, emptyAccumulator);

@@ -21,10 +21,7 @@ import {
       chartData: this.statusEvents.pipe(
         map((te) => te.about),
         scan(accumulateEvents, emptyAccumulator),
-        map(toGraphData),
-        map((gd) => {
-          return gd;
-        })
+        map(toGraphData)
       ),
     };
   },
