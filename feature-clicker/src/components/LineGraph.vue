@@ -6,7 +6,12 @@
 
 <script lang=ts>
 import { Component, Prop, Vue } from "vue-property-decorator";
-import Chart, { ChartConfiguration, ChartData, ChartOptions } from "chart.js";
+import Chart, {
+  ChartConfiguration,
+  ChartData,
+  ChartDataSets,
+  ChartOptions,
+} from "chart.js";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
@@ -26,17 +31,17 @@ let addOpacity = function (hex: string, opacity: string) {
     : hex;
 };
 
-const defaultColors = ["#42DD42", "#33AA33"];
+const defaultColors = ["#2211AA", "#129912"];
 
-function formatChartData(cd: ChartData) {
+function formatChartData(cd: ChartDataSets[]): ChartData {
   if (!cd) {
     return cd;
   }
-  cd.datasets?.forEach((ds, i) => {
+  cd.forEach((ds, i) => {
     ds.borderColor = defaultColors[i];
     ds.backgroundColor = addOpacity(defaultColors[i], "0.5");
   });
-  return cd;
+  return { datasets: cd };
 }
 
 @Component<LineChart>({
@@ -47,10 +52,9 @@ function formatChartData(cd: ChartData) {
   },
 })
 export default class LineChart extends Vue {
-  @Prop({ required: true }) private chartData!: ChartData;
+  @Prop({ required: true }) private chartData!: ChartDataSets[];
 
   created() {
-    console.log("CREATED was called");
     this.$watch("formattedChartData", this.dataHandler);
   }
 
