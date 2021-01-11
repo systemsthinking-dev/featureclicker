@@ -9,7 +9,7 @@ describe("converting status reports into graph data", () => {
   it("makes an empty graph for no data", () => {
     const result = toGraphData(emptyAccumulator());
     const emptyGraph = {
-      label: "vps",
+      label: "my vps",
       data: [],
     };
     assert.deepEqual(result, emptyGraph);
@@ -22,7 +22,7 @@ describe("converting status reports into graph data", () => {
     const accumulated = inputEvents.reduce(accumulateEvents, emptyAccumulator());
     const result = toGraphData(accumulated);
     const likeThis: ChartDataSets = {
-      label: "vps",
+      label: "my vps",
       data: [
         { x: 0, y: 0 },
         { x: 1, y: 1 },

@@ -15,7 +15,7 @@ export function accumulateEvents(accum: DataAccumulation, event: StatusReport): 
 
 export function toGraphData(accum: DataAccumulation): ChartDataSets {
   return {
-    label: "vps",
+    label: "my vps",
     data: accum
   };
 }
