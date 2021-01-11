@@ -27,7 +27,7 @@ import {
   subscriptions() {
     const myData: Observable<ChartDataSets> = this.statusEvents.pipe(
       filter((te) => te.from.teamMemberId === this.myTeamMemberId),
-      map((te) => te.about),
+      map((te) => ({ ...te.about, tick: te.when })), // translate my time to team time
       scan(accumulateEvents, emptyAccumulator()),
       map(toGraphData)
     );
