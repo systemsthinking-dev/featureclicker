@@ -25,9 +25,10 @@ export function toGraphData(accum: DataAccumulation): ChartData {
 export type TeamVpsAccumulation = { datapoints: ChartPoint[], currentVpsByPerson: Record<TeamMemberId, ValuePerSecond> };
 export const emptyTeamVpsAccumulation = { datapoints: [], currentVpsByPerson: {} };
 export function accumulateTeamVps(accum: TeamVpsAccumulation, event: TeamEvent): TeamVpsAccumulation {
+  accum.datapoints.push({ x: event.about.tick, y: event.about.vps });
   return accum;
 }
 
 export function teamVpsAccumulationToGraphData(accum: TeamVpsAccumulation): ChartDataSets {
-  return {}
+  return { label: "team vps", data: accum.datapoints }
 }
