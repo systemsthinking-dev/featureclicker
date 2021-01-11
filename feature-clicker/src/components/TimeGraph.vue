@@ -6,14 +6,17 @@
 
 <script lang=ts>
 import { TeamEvent, TeamMemberId } from "@/system/TeamSystem";
-import { ChartData } from "chart.js";
-import { Observable } from "rxjs";
+import { ChartData, ChartDataSets } from "chart.js";
+import { combineLatest, Observable } from "rxjs";
 import { filter, map, scan } from "rxjs/operators";
 import { Component, Prop, Vue } from "vue-property-decorator";
 import LineChart from "./LineGraph.vue";
 import {
   accumulateEvents,
+  accumulateTeamVps,
   emptyAccumulator,
+  emptyTeamVpsAccumulation,
+  teamVpsAccumulationToGraphData,
   toGraphData,
 } from "./support/graphdata";
 
@@ -22,14 +25,18 @@ import {
     LineChart,
   },
   subscriptions() {
+    const myData: Observable<ChartDataSets> = this.statusEvents.pipe(
+      filter((te) => te.from.teamMemberId === this.myTeamMemberId),
+      map((te) => te.about),
+      scan(accumulateEvents, emptyAccumulator()),
+      map(toGraphData)
+    );
+    const teamData: Observable<ChartDataSets> = this.statusEvents.pipe(
+      scan(accumulateTeamVps, emptyTeamVpsAccumulation()),
+      map(teamVpsAccumulationToGraphData)
+    );
     return {
-      chartData: this.statusEvents.pipe(
-        filter((te) => te.from.teamMemberId === this.myTeamMemberId),
-        map((te) => te.about),
-        scan(accumulateEvents, emptyAccumulator()),
-        map(toGraphData),
-        map((a) => [a])
-      ),
+      chartData: combineLatest([myData, teamData]),
       // moreData: this.statusEvents.pipe(
       //   scan((accum, ev) => { return accum}, {}),
       //   map((accum) => )
