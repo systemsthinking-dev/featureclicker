@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { combineLatest, Observable, Observer, of, Subject } from "rxjs";
-import type { ValuePerSecond } from "./IndividualWork";
+import { combineLatest, Observable, Observer, of, Subject, timer } from "rxjs";
+import type { SecondsSinceBegin, ValuePerSecond } from "./IndividualWork";
 import { map, scan, startWith, withLatestFrom } from "rxjs/operators";
 import { v4 as uuid } from "uuid";
 import { Individual_within_Team, isDifferentStatus, StatusReport } from "./Individual_within_Team";
@@ -13,12 +13,17 @@ export type TeamMemberName = string;
 export type TeamMemberId = string;
 export type TeamStatusSummary = Record<TeamMemberId, StatusReport & { name: TeamMemberName }>;
 export type SendStatusReportPlease = "tps";
-export type TeamEvent = {
+export type TeamEvent = ReceivedEvent & {
+  when: SecondsSinceBegin
+}
+
+export type ReceivedEvent = {
   from: {
     teamMemberId: TeamMemberId;
     teamMemberName: TeamMemberName;
-  }; about: StatusReport;
-} // what we receive
+  };
+  about: StatusReport;
+}// what we receive
 
 export enum StatusStatus {
   UpToDate, OutOfDate
@@ -36,8 +41,10 @@ export class TeamSystem {
   constructor(backendUrl: string, individualRelationship: Individual_within_Team) {
     const defaultName = "Fred";
 
-    const [eventsFromServer, eventsToServer, connectionStatus] = wireUpTheWebsocket<TeamEvent>(backendUrl);
-    this.eventsFromServer = eventsFromServer;
+    const myOwnDamnClock: Observable<SecondsSinceBegin> = timer(0, 1000);
+
+    const [eventsFromServer, eventsToServer, connectionStatus] = wireUpTheWebsocket<ReceivedEvent>(backendUrl);
+    this.eventsFromServer = eventsFromServer.pipe(withLatestFrom(timer(0, 1000)), map(([te, tick]) => ({ ...te, when: tick })));
     this.connectionStatus = connectionStatus;
 
     this.teamScores = this.eventsFromServer.pipe(scan((accum, e) => {
@@ -68,7 +75,7 @@ export class TeamSystem {
     // wrap status report in message details, so it's the same format we expect to receive
     const reportsToSend = triggerReport.pipe(withLatestFrom(memberName, individualStatus),
       map(([_tps, yourName, myEvent]) => {
-        const te: TeamEvent = { from: { teamMemberId, teamMemberName: yourName }, about: myEvent };
+        const te: ReceivedEvent = { from: { teamMemberId, teamMemberName: yourName }, about: myEvent };
         return te;
       }))
     reportsToSend.subscribe(eventsToServer)

@@ -55,7 +55,6 @@ export default class LineChart extends Vue {
   @Prop({ required: true }) private chartData!: ChartDataSets[];
 
   created() {
-    console.log("CREATED was called");
     this.$watch("formattedChartData", this.dataHandler);
   }
 

@@ -25,7 +25,7 @@ export function emptyTeamVpsAccumulation() { return { datapoints: [], currentVps
 export function accumulateTeamVps(accum: TeamVpsAccumulation, event: TeamEvent): TeamVpsAccumulation {
   accum.currentVpsByPerson[event.from.teamMemberId] = event.about.vps;
   const total = Object.values(accum.currentVpsByPerson).reduce((a, v) => a + v, 0);
-  accum.datapoints.push({ x: event.about.tick, y: total });
+  accum.datapoints.push({ x: event.when, y: total });
   return accum;
 }
 

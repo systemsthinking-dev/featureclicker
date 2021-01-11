@@ -37,21 +37,24 @@ describe("converting status reports into graph data", () => {
 describe("Converting team events to a series of total VPS over time", () => {
   it("returns a single record", () => {
     const teamEvents: TeamEvent[] = [{
+      when: 5,
       from: { teamMemberId: "aaa", teamMemberName: "Fred" },
       about: { tick: 1, vps: 3 }
     }];
     const accumulated = teamEvents.reduce(accumulateTeamVps, emptyTeamVpsAccumulation());
     const result = teamVpsAccumulationToGraphData(accumulated);
 
-    const expected: ChartDataSets = { label: "team vps", data: [{ x: 1, y: 3 }] };
+    const expected: ChartDataSets = { label: "team vps", data: [{ x: 5, y: 3 }] };
     assert.deepEqual(result, expected, "single case");
   });
 
   it("sums vps from different people", () => {
     const teamEvents: TeamEvent[] = [{
+      when: 1,
       from: { teamMemberId: "ccc", teamMemberName: "Fred" },
       about: { tick: 1, vps: 3 }
     }, {
+      when: 3,
       from: { teamMemberId: "bbb", teamMemberName: "Josie" },
       about: { tick: 1, vps: 4 }
     }];
@@ -59,19 +62,22 @@ describe("Converting team events to a series of total VPS over time", () => {
     //console.log("accumulated is " + JSON.stringify(accumulated, null, 2))
     const result = teamVpsAccumulationToGraphData(accumulated);
 
-    const expected: ChartDataSets = { label: "team vps", data: [{ x: 1, y: 3 }, { x: 1, y: 7 }] };
+    const expected: ChartDataSets = { label: "team vps", data: [{ x: 1, y: 3 }, { x: 3, y: 7 }] };
     assert.deepEqual(result, expected, "single case");
   })
 
   it("Replaces a team member's contribution on update report", () => {
     const teamEvents: TeamEvent[] = [{
+      when: 1,
       from: { teamMemberId: "ccc", teamMemberName: "Fred" },
       about: { tick: 1, vps: 3 }
     }, {
+      when: 2,
       from: { teamMemberId: "bbb", teamMemberName: "Josie" },
       about: { tick: 1, vps: 4 }
     },
     {
+      when: 3,
       from: { teamMemberId: "ccc", teamMemberName: "Fred again" },
       about: { tick: 3, vps: 5 }
     },
@@ -80,7 +86,7 @@ describe("Converting team events to a series of total VPS over time", () => {
     //console.log("accumulated is " + JSON.stringify(accumulated, null, 2))
     const result = teamVpsAccumulationToGraphData(accumulated);
 
-    const expected: ChartDataSets = { label: "team vps", data: [{ x: 1, y: 3 }, { x: 1, y: 7 }, { x: 3, y: 9 }] };
+    const expected: ChartDataSets = { label: "team vps", data: [{ x: 1, y: 3 }, { x: 2, y: 7 }, { x: 3, y: 9 }] };
     assert.deepEqual(result, expected, "single case");
   })
 })
