@@ -27,7 +27,8 @@ import {
         filter((te) => te.from.teamMemberId === this.myTeamMemberId),
         map((te) => te.about),
         scan(accumulateEvents, emptyAccumulator()),
-        map(toGraphData)
+        map(toGraphData),
+        map((a) => [a])
       ),
       // moreData: this.statusEvents.pipe(
       //   scan((accum, ev) => { return accum}, {}),

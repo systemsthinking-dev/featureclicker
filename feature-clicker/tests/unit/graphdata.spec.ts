@@ -9,10 +9,8 @@ describe("converting status reports into graph data", () => {
   it("makes an empty graph for no data", () => {
     const result = toGraphData(emptyAccumulator());
     const emptyGraph = {
-      datasets: [{
-        label: "vps",
-        data: [],
-      }]
+      label: "vps",
+      data: [],
     };
     assert.deepEqual(result, emptyGraph);
   });
@@ -23,15 +21,13 @@ describe("converting status reports into graph data", () => {
       { tick: 4, vps: 10 }];
     const accumulated = inputEvents.reduce(accumulateEvents, emptyAccumulator());
     const result = toGraphData(accumulated);
-    const likeThis: ChartData = {
-      datasets: [{
-        label: "vps",
-        data: [
-          { x: 0, y: 0 },
-          { x: 1, y: 1 },
-          { x: 4, y: 10 },
-        ],
-      }]
+    const likeThis: ChartDataSets = {
+      label: "vps",
+      data: [
+        { x: 0, y: 0 },
+        { x: 1, y: 1 },
+        { x: 4, y: 10 },
+      ],
     };
     assert.deepEqual(result, likeThis, "Make sure it can fail");
   });
