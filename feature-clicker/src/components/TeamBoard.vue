@@ -6,7 +6,7 @@
       <table>
         <thead>
           <tr>
-            <th scope="col">name</th>
+            <th scope="col">resource</th>
             <th scope="col">vps</th>
           </tr>
         </thead>
