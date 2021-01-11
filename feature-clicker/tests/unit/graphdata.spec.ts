@@ -7,7 +7,7 @@ import { ChartData, ChartDataSets } from "chart.js";
 
 describe("converting status reports into graph data", () => {
   it("makes an empty graph for no data", () => {
-    const result = toGraphData(emptyAccumulator);
+    const result = toGraphData(emptyAccumulator());
     const emptyGraph = {
       datasets: [{
         label: "vps",
@@ -21,7 +21,7 @@ describe("converting status reports into graph data", () => {
       { tick: 0, vps: 0 },
       { tick: 1, vps: 1 },
       { tick: 4, vps: 10 }];
-    const accumulated = inputEvents.reduce(accumulateEvents, emptyAccumulator);
+    const accumulated = inputEvents.reduce(accumulateEvents, emptyAccumulator());
     const result = toGraphData(accumulated);
     const likeThis: ChartData = {
       datasets: [{
@@ -44,11 +44,26 @@ describe("Converting team events to a series of total VPS over time", () => {
       from: { teamMemberId: "aaa", teamMemberName: "Fred" },
       about: { tick: 1, vps: 3 }
     }];
-    const accumulated = teamEvents.reduce(accumulateTeamVps, emptyTeamVpsAccumulation);
+    const accumulated = teamEvents.reduce(accumulateTeamVps, emptyTeamVpsAccumulation());
     const result = teamVpsAccumulationToGraphData(accumulated);
 
     const expected: ChartDataSets = { label: "team vps", data: [{ x: 1, y: 3 }] };
     assert.deepEqual(result, expected, "single case");
+  });
 
+  it("sums vps from different people", () => {
+    const teamEvents: TeamEvent[] = [{
+      from: { teamMemberId: "ccc", teamMemberName: "Fred" },
+      about: { tick: 1, vps: 3 }
+    }, {
+      from: { teamMemberId: "bbb", teamMemberName: "Josie" },
+      about: { tick: 1, vps: 4 }
+    }];
+    const accumulated = teamEvents.reduce(accumulateTeamVps, emptyTeamVpsAccumulation());
+    //console.log("accumulated is " + JSON.stringify(accumulated, null, 2))
+    const result = teamVpsAccumulationToGraphData(accumulated);
+
+    const expected: ChartDataSets = { label: "team vps", data: [{ x: 1, y: 3 }, { x: 1, y: 7 }] };
+    assert.deepEqual(result, expected, "single case");
   })
 })

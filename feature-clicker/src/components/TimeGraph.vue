@@ -26,13 +26,13 @@ import {
       chartData: this.statusEvents.pipe(
         filter((te) => te.from.teamMemberId === this.myTeamMemberId),
         map((te) => te.about),
-        scan(accumulateEvents, emptyAccumulator),
+        scan(accumulateEvents, emptyAccumulator()),
         map(toGraphData)
       ),
-      moreData: this.statusEvents.pipe(
-        scan((accum, ev) => { return accum}, {}),
-        map((accum) => )
-      )
+      // moreData: this.statusEvents.pipe(
+      //   scan((accum, ev) => { return accum}, {}),
+      //   map((accum) => )
+      // )
     };
   },
 })

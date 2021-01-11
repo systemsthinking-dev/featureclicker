@@ -6,7 +6,7 @@ import { ChartData, ChartDataSets, ChartPoint } from "chart.js";
 
 export type DataAccumulation = ChartPoint[]; // exported only for tests
 
-export const emptyAccumulator: DataAccumulation = []; // exported only for tests
+export function emptyAccumulator(): DataAccumulation { return [] }; // exported only for tests
 
 export function accumulateEvents(accum: DataAccumulation, event: StatusReport): DataAccumulation {
   accum.push({ x: event.tick, y: event.vps });
@@ -23,9 +23,11 @@ export function toGraphData(accum: DataAccumulation): ChartData {
 }
 
 export type TeamVpsAccumulation = { datapoints: ChartPoint[], currentVpsByPerson: Record<TeamMemberId, ValuePerSecond> };
-export const emptyTeamVpsAccumulation = { datapoints: [], currentVpsByPerson: {} };
+export function emptyTeamVpsAccumulation() { return { datapoints: [], currentVpsByPerson: {} } };
 export function accumulateTeamVps(accum: TeamVpsAccumulation, event: TeamEvent): TeamVpsAccumulation {
-  accum.datapoints.push({ x: event.about.tick, y: event.about.vps });
+  accum.currentVpsByPerson[event.from.teamMemberId] = event.about.vps;
+  const total = Object.values(accum.currentVpsByPerson).reduce((a, v) => a + v, 0);
+  accum.datapoints.push({ x: event.about.tick, y: total });
   return accum;
 }
 
