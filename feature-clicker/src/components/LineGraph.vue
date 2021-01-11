@@ -31,7 +31,7 @@ let addOpacity = function (hex: string, opacity: string) {
     : hex;
 };
 
-const defaultColors = ["#42DD42", "#33AA33"];
+const defaultColors = ["#2211AA", "#129912"];
 
 function formatChartData(cd: ChartDataSets[]): ChartData {
   if (!cd) {

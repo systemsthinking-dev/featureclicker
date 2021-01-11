@@ -51,7 +51,7 @@ export default class CapabilityStock extends Vue {
 
 <style scoped>
 circle.capability-stock {
-  fill: lightgreen;
+  fill: #2211aa;
   transition-duration: 1s;
 }
 text {
