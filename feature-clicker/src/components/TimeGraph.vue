@@ -29,6 +29,10 @@ import {
         scan(accumulateEvents, emptyAccumulator),
         map(toGraphData)
       ),
+      moreData: this.statusEvents.pipe(
+        scan((accum, ev) => { return accum}, {}),
+        map((accum) => )
+      )
     };
   },
 })

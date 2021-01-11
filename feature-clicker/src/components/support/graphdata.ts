@@ -1,5 +1,7 @@
+import { ValuePerSecond } from "@/system/IndividualWork";
 import { StatusReport } from "@/system/Individual_within_Team";
-import { ChartData, ChartPoint } from "chart.js";
+import { TeamEvent, TeamMemberId } from "@/system/TeamSystem";
+import { ChartData, ChartDataSets, ChartPoint } from "chart.js";
 // import { ChartDataSets, ChartPoint } from "chart.js";
 
 export type DataAccumulation = ChartPoint[]; // exported only for tests
@@ -18,4 +20,14 @@ export function toGraphData(accum: DataAccumulation): ChartData {
       data: accum
     }]
   };
+}
+
+export type TeamVpsAccumulation = { datapoints: ChartPoint[], currentVpsByPerson: Record<TeamMemberId, ValuePerSecond> };
+export const emptyTeamVpsAccumulation = { datapoints: [], currentVpsByPerson: {} };
+export function accumulateTeamVps(accum: TeamVpsAccumulation, event: TeamEvent): TeamVpsAccumulation {
+  return accum;
+}
+
+export function teamVpsAccumulationToGraphData(accum: TeamVpsAccumulation): ChartDataSets {
+  return {}
 }

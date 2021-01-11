@@ -61,7 +61,6 @@ export class TeamSystem {
     /**
      * status reports go out
      */
-
     const triggerReport = new Subject<SendStatusReportPlease>();
     this.triggerReport = triggerReport;
     const individualStatus = new Subject<StatusReport>();

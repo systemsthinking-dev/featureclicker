@@ -1,14 +1,14 @@
-import { accumulateEvents, emptyAccumulator, toGraphData } from "@/components/support/graphdata";
+import { accumulateEvents, accumulateTeamVps, emptyAccumulator, emptyTeamVpsAccumulation, teamVpsAccumulationToGraphData, toGraphData } from "@/components/support/graphdata";
 import { StatusReport } from "@/system/Individual_within_Team";
+import { TeamEvent } from "@/system/TeamSystem";
 import { assert } from "chai";
-import { ChartData } from "chart.js";
+import { ChartData, ChartDataSets } from "chart.js";
 
 
 describe("converting status reports into graph data", () => {
   it("makes an empty graph for no data", () => {
     const result = toGraphData(emptyAccumulator);
     const emptyGraph = {
-      labels: ["vps"],
       datasets: [{
         label: "vps",
         data: [],
@@ -24,7 +24,6 @@ describe("converting status reports into graph data", () => {
     const accumulated = inputEvents.reduce(accumulateEvents, emptyAccumulator);
     const result = toGraphData(accumulated);
     const likeThis: ChartData = {
-      labels: ["vps"],
       datasets: [{
         label: "vps",
         data: [
@@ -37,3 +36,19 @@ describe("converting status reports into graph data", () => {
     assert.deepEqual(result, likeThis, "Make sure it can fail");
   });
 });
+
+
+describe("Converting team events to a series of total VPS over time", () => {
+  it("returns a single record", () => {
+    const teamEvents: TeamEvent[] = [{
+      from: { teamMemberId: "aaa", teamMemberName: "Fred" },
+      about: { tick: 1, vps: 3 }
+    }];
+    const accumulated = teamEvents.reduce(accumulateTeamVps, emptyTeamVpsAccumulation);
+    const result = teamVpsAccumulationToGraphData(accumulated);
+
+    const expected: ChartDataSets = { label: "team vps", data: [{ x: 1, y: 3 }] };
+    assert.deepEqual(result, expected, "single case");
+
+  })
+})
