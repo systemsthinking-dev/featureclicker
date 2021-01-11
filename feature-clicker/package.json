@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.166",
+    "chart.js": "^2.9.4",
     "core-js": "^3.6.5",
     "rxjs": "^6.6.3",
     "uuid": "^8.3.2",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
+    "@types/chart.js": "^2.9.29",
     "@types/mocha": "^5.2.4",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^2.33.0",

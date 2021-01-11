@@ -45,6 +45,7 @@ export class IndividualWork {
   public secondsSinceBegin: Observable<SecondsSinceBegin>;
 
   public totalValueCreated: BehaviorSubject<ValueCreated>;
+
 }
 
 export const fakeIndividualWork: IndividualWork = {

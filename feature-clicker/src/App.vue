@@ -7,21 +7,27 @@
       </div>
       <TeamBoard :teamSystem="teamSystem" />
       <HelloWorld :individualWork="individualWork" />
+      <TimeGraph
+        :statusEvents="teamSystem.eventsFromServer"
+        :myTeamMemberId="teamSystem.teamMemberId"
+      />
     </main>
 
-    <a href="https://systemsthinking.dev" target="_blank">
-      <img
-        alt="SystemsThinking.dev logo"
-        class="stdev-logo"
-        src="./assets/logo.png"
-      />
-    </a>
-    <a
-      href="https://github.com/systemsthinking-dev/featureclicker"
-      target="_blank"
-    >
-      <img alt="GitHub" class="github-logo" src="./assets/GitHub_Logo.png" />
-    </a>
+    <footer>
+      <a href="https://systemsthinking.dev" target="_blank">
+        <img
+          alt="SystemsThinking.dev logo"
+          class="stdev-logo"
+          src="./assets/logo.png"
+        />
+      </a>
+      <a
+        href="https://github.com/systemsthinking-dev/featureclicker"
+        target="_blank"
+      >
+        <img alt="GitHub" class="github-logo" src="./assets/GitHub_Logo.png" />
+      </a>
+    </footer>
   </div>
 </template>
 
@@ -31,6 +37,7 @@ import VueRx from "vue-rx";
 import HelloWorld from "./components/HelloWorld.vue";
 import TeamBoard from "./components/TeamBoard.vue";
 import NameInput from "./components/NameInput.vue";
+import TimeGraph from "./components/TimeGraph.vue";
 import { IndividualWork } from "./system/IndividualWork";
 import { TeamSystem } from "./system/TeamSystem";
 import { Individual_within_Team } from "./system/Individual_within_Team";
@@ -53,6 +60,7 @@ window.things = individualWork; // play in the console
     HelloWorld,
     NameInput,
     TeamBoard,
+    TimeGraph,
   },
 })
 export default class App extends Vue {
@@ -101,6 +109,10 @@ body {
 
 .one {
   display: inline-block;
+  vertical-align: middle;
+}
+
+footer a {
   vertical-align: middle;
 }
 
