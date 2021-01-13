@@ -2,7 +2,9 @@
   <div id="app">
     <header>
       If you find value in Feature Clicker,
-      <a href="https://patreon.com/jessitron">support me on Patreon</a>!
+      <a href="https://patreon.com/jessitron" target="_blank"
+        >support me on Patreon</a
+      >!
     </header>
     <main class="hello">
       <div class="one">
