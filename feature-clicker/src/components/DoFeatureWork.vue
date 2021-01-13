@@ -11,8 +11,8 @@
       r="5"
     />
     <radialGradient id="PrettyOrangeButton">
-      <stop offset="0%" stop-color="rgba(247, 154, 4, 1)" />
-      <stop offset="89" stop-color="rgba(219, 138, 10, 1)" />
+      <stop offset="0%" stop-color="rgba(138, 216, 252, 1)" />
+      <stop offset="89" stop-color="rgba(118, 200, 222, 1)" />
       <stop offset="100%" stop-color="rgba(255, 255, 255, 1) " />
     </radialGradient>
     <circle
