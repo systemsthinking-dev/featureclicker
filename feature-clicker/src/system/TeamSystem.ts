@@ -37,6 +37,22 @@ type MemberNameChangeEvent = {
   }
 }
 
+type TeamVpsAccumulation = { when: SecondsSinceBegin, total: ValuePerSecond, currentVpsByPerson: Record<TeamMemberId, ValuePerSecond> };
+function emptyTeamVpsAccumulation() { return { when: 0, total: 0, currentVpsByPerson: {} } };
+function accumulateTeamVps(accum: TeamVpsAccumulation, event: TeamEvent): TeamVpsAccumulation {
+  const currentVpsByPerson = { ...accum.currentVpsByPerson };
+  currentVpsByPerson[event.from.teamMemberId] = event.about.vps;
+  const total = Object.values(currentVpsByPerson).reduce((a, v) => a + v, 0);
+  const newAccum = { when: event.when, total, currentVpsByPerson }
+  return newAccum;
+}
+
+export type TeamVpsAtTime = { when: SecondsSinceBegin, total: ValuePerSecond };
+function teamVpsAccumulationToTotal(accum: TeamVpsAccumulation): TeamVpsAtTime {
+  const { when, total } = accum;
+  return { when, total };
+}
+
 export class TeamSystem {
   constructor(backendUrl: string, individualRelationship: Individual_within_Team) {
     const defaultName = "Fred";
@@ -54,6 +70,8 @@ export class TeamSystem {
       return newbie;
     }, {} as TeamStatusSummary)
     );
+    const teamCapabilityStockAtTime: Observable<TeamVpsAtTime> = this.eventsFromServer.pipe(
+      scan(accumulateTeamVps, emptyTeamVpsAccumulation()), map(teamVpsAccumulationToTotal));
 
     /*
      * Member name is noticed
@@ -99,7 +117,9 @@ export class TeamSystem {
           return StatusStatus.UpToDate; // well, looks like they're close enough
         }));
 
+
     individualRelationship.hookUpTeam({
+      teamCapabilityStockAtTime,
       individualStatus
     });
 

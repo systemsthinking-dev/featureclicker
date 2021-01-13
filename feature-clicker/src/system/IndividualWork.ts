@@ -1,5 +1,5 @@
 
-import { Subject, BehaviorSubject, Observable, timer } from "rxjs";
+import { Subject, BehaviorSubject, Observable, timer, combineLatest } from "rxjs";
 import { scan, delay, first, mergeMap, startWith, withLatestFrom, map } from "rxjs/operators";
 import type { Individual_within_Team } from "./Individual_within_Team";
 
@@ -9,6 +9,7 @@ export type ClickOnFeatureWork = { event: Event };
 export type SecondsSinceBegin = number;
 export type ValueCreated = number;
 export type ValuePerSecond = number;
+type CapabilityStockGeneratedPerClickOfWork = number;
 
 export class IndividualWork {
   constructor(teamRelationship: Individual_within_Team) {
@@ -20,10 +21,29 @@ export class IndividualWork {
       mergeMap(_t => timer(0, 1000)), // start emitting numbers every second
       startWith(0)); // before that, be 0
 
-    const valueOfEachClick = 1;
+    const teamCapabilityStock: Subject<ValuePerSecond> = new BehaviorSubject(0);
+    const valueOfEachClick: Observable<CapabilityStockGeneratedPerClickOfWork> = combineLatest([teamCapabilityStock, this.capabilityStock]).pipe(
+      map(([teamVps, myVps]) => {
+        //console.log("Got team VPS: " + teamVps + " and myVPS " + myVps);
+        if (myVps === 0) {
+          return 1;
+        }
+        const nonzeroTeamVps = Math.max(myVps, teamVps); // maybe no one has reported; my work counts then.
+        const percentageOfCapabilitiesThatIWrote = myVps / nonzeroTeamVps;
+        // Vary the amount of capability added for each click of work I do, based on my familiarity with the codebase.
+        // https://www.wolframalpha.com/input/?i=plot+-0.25%2F%28x-1.1%29
+        // x = percentageOfCapabilitiesThatIWrote
+        // y = capabilityAddedWhenIClick 
+        // When I wrote all the work, x = 1, so y = 4. We get 4 vps per click
+        // When I wrote none of the work, x = 0, so y = 0.23. I get very little work per click.
+        const capabilityAddedWhenIClick = (-0.25) / (percentageOfCapabilitiesThatIWrote - 1.1);
+        return capabilityAddedWhenIClick;
+      })
+    );
     const workFlowingIntoCapabilities: Observable<number> = this.featureWorkDone.pipe(
-      scan(countSoFar => countSoFar + valueOfEachClick, 0),
-      delay(2000)
+      withLatestFrom(valueOfEachClick),
+      scan((countSoFar, [_click, valueOfEachClick]) => countSoFar + valueOfEachClick, 0),
+      delay(2000),
     );
 
     workFlowingIntoCapabilities.subscribe(this.capabilityStock);
@@ -33,8 +53,10 @@ export class IndividualWork {
 
     valueFlowingFromCapabilities.pipe(scan((accum, moreValue) => accum + moreValue, 0)).subscribe(this.totalValueCreated);
 
+
+
     teamRelationship.hookUpIndividual({
-      clock: this.secondsSinceBegin, vps: this.capabilityStock
+      clock: this.secondsSinceBegin, vps: this.capabilityStock, teamCapabilityStock
     });
   }
 
