@@ -1,5 +1,9 @@
 <template>
   <div id="app">
+    <header>
+      If you find value in Feature Clicker,
+      <a href="https://patreon.com/jessitron">support me on Patreon</a>!
+    </header>
     <main class="hello">
       <div class="one">
         <div class="title">{{ msg }}</div>
@@ -77,13 +81,19 @@ export default class App extends Vue {
 </script>
 
 <style>
+header {
+  margin-bottom: 10px;
+  font-size: small;
+  font-family: serif;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 20px;
 }
 
 .github-logo {
@@ -99,12 +109,7 @@ export default class App extends Vue {
 
 body {
   background: rgb(0, 212, 255);
-  background: linear-gradient(
-    90deg,
-    rgba(0, 212, 255, 1) 0%,
-    rgba(225, 236, 245, 1) 50%,
-    rgba(0, 212, 255, 1) 100%
-  );
+  background: linear-gradient(90deg, rgb(214 213 255) 0%, rgb(255 0 247) 100%);
 }
 
 .one {
