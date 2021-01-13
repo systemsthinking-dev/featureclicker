@@ -12,7 +12,7 @@
         </thead>
         <tr v-for="(mate, id) of teammates" :key="id">
           <td>{{ mate.name }}</td>
-          <td>{{ mate.vps }}</td>
+          <td>{{ Math.round(mate.vps) }}</td>
         </tr>
       </table>
     </div>

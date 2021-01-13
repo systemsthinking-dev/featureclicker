@@ -29,7 +29,7 @@ const circleCenter = 90;
   subscriptions() {
     const radius = this.quantityObservable.pipe(map(this.calculateRadius));
     return {
-      quantity: this.quantityObservable,
+      quantity: this.quantityObservable.pipe(map(Math.round)),
       circleRadius: radius,
       belowCircle: radius.pipe(map((r) => circleCenter + r + 20)),
     };

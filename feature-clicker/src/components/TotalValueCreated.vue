@@ -56,7 +56,7 @@ export function formatSeconds(allTheSeconds: number): string {
 
 function formatMoney(valueCreated: ValueCreated) {
   const dollars = Math.floor(valueCreated / 100);
-  const cents = valueCreated % 100;
+  const cents = Math.round(valueCreated % 100);
   return "$" + dollars + "." + padTo2Digits(cents);
 }
 

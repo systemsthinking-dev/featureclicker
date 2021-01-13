@@ -17,8 +17,9 @@ import type { IndividualWork } from "../system/IndividualWork";
 import DoFeatureWork from "./DoFeatureWork.vue";
 import CapabilityStock from "./CapabilityStock.vue";
 import TotalValueCreated from "./TotalValueCreated.vue";
+import { map } from "rxjs/operators";
 
-@Component({
+@Component<HelloWorld>({
   components: {
     DoFeatureWork,
     CapabilityStock,
