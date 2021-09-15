@@ -1,5 +1,6 @@
+import * as uuid from "uuid";
 
-const sessionId: string = "uuid"
+const sessionId: string = uuid.v4();
 
 export function sendSomethingToHoneycomb(data: object) {
   const augmentedData = { ...data, sessionId }
