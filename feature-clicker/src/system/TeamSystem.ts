@@ -103,7 +103,7 @@ export class TeamSystem {
     this.statusUptodateness = combineLatest([individualStatus,
       reportsToSend.pipe(startWith(null)), // otherwise this observable won't fire until they all have a value
       memberName]).pipe(
-        map(([tracedCurrentStatus, lastMessageSent, latestName]) => {
+        map(([tracedCurrentStatus, lastMessageSent, latestName]) =>
           withSpan(tracedCurrentStatus, "determine status uptodateness", (currentStatus: StatusReport) => {
             if (lastMessageSent === null) {
               // if a report hasn't fired yet, it's definitely out of date
@@ -118,7 +118,7 @@ export class TeamSystem {
             }
             return StatusStatus.UpToDate; // well, looks like they're close enough
           })
-        }));
+        ));
 
 
     individualRelationship.hookUpTeam({
@@ -132,7 +132,7 @@ export class TeamSystem {
 
   public triggerReport: Observer<SendStatusReportPlease>;
 
-  public statusUptodateness: Observable<StatusStatus>;
+  public statusUptodateness: Observable<Traced<StatusStatus>>;
 
   public connectionStatus: Observable<ConnectionStatus>;
 
