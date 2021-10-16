@@ -110,7 +110,7 @@ function sendSpanEventToHoneycomb(traced: Traced<any>, moar: object) {
     "trace.parent_id": traced.trace.parent_id,
     "trace.span_id": traced.trace.span_id,
     "app.timestamp": "" + traced.timestamp, // this is for my own info
-    ...moar,
+    app: { moar },
   }
   fetch('https://api.honeycomb.io/1/events/featureclicker',
     {
