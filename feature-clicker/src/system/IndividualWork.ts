@@ -1,4 +1,5 @@
 
+import { packageAsNewTrace, Traced } from "@/tracing";
 import { Subject, BehaviorSubject, Observable, timer, combineLatest } from "rxjs";
 import { scan, delay, first, mergeMap, startWith, withLatestFrom, map } from "rxjs/operators";
 import { sendSomethingToHoneycomb } from "./honeycomb";
@@ -12,16 +13,19 @@ export type ValueCreated = number;
 export type ValuePerSecond = number;
 type CapabilityStockGeneratedPerClickOfWork = number;
 
+
+
+
 export class IndividualWork {
   constructor(teamRelationship: Individual_within_Team) {
     this.featureWorkDone = new Subject<ClickOnFeatureWork>();
     this.capabilityStock = new BehaviorSubject<ValuePerSecond>(0);
     this.totalValueCreated = new BehaviorSubject<ValueCreated>(0);
-    const everySecond = timer(0, 1000);
+    const everySecond = timer(0, 1000).pipe(map(seconds => packageAsNewTrace(seconds)));
     this.secondsSinceBegin = this.featureWorkDone.pipe(
       first(), // on the first click,
       mergeMap(_firstClickStartsTheClock => everySecond), // start emitting numbers every second
-      startWith(0)); // before that, be 0
+      startWith(packageAsNewTrace(0))); // before that, be 0
 
     const teamCapabilityStock: Subject<ValuePerSecond> = new BehaviorSubject(0);
     const valueOfEachClick: Observable<CapabilityStockGeneratedPerClickOfWork> =
@@ -72,7 +76,7 @@ export class IndividualWork {
 
   public capabilityStock: BehaviorSubject<ValuePerSecond>; // TODO: I think all these should be exposed as Observable
 
-  public secondsSinceBegin: Observable<SecondsSinceBegin>;
+  public secondsSinceBegin: Observable<Traced<SecondsSinceBegin>>;
 
   public totalValueCreated: BehaviorSubject<ValueCreated>;
 
