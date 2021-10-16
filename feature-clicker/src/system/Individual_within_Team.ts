@@ -51,7 +51,8 @@ export class Individual_within_Team {
       map<[ValuePerSecond, Traced<SecondsSinceBegin>], Traced<StatusReport>>(
         ([vps, tracedTick]) => {
           return withSpan<SecondsSinceBegin, StatusReport>(tracedTick, "construct status report",
-            (tick) => ({ tick, vps }))
+            (tick) => ({ tick, vps }),
+            { tick: tracedTick.data })
         }),
       startWith(packageAsNewTrace("starting value of status report", { tick: 0, vps: 0 })))
       .subscribe(team.individualStatus);

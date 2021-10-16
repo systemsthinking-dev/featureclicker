@@ -22,7 +22,7 @@ export class IndividualWork {
     this.capabilityStock = new BehaviorSubject<ValuePerSecond>(0);
     this.totalValueCreated = new BehaviorSubject<ValueCreated>(0);
     const everySecond = timer(0, 1000).pipe(map(seconds =>
-      packageAsNewTrace("tick", seconds)));
+      packageAsNewTrace("tick", seconds, { tick: seconds })));
     this.secondsSinceBegin = this.featureWorkDone.pipe(
       first(), // on the first click,
       mergeMap(_firstClickStartsTheClock => everySecond), // start emitting numbers every second

@@ -25,7 +25,7 @@ function generateSpanId() {
 // I can enumerate these here if I want
 type TopLevelSpanName = string;
 
-export function packageAsNewTrace<T>(spanName: TopLevelSpanName, data: T): Traced<T> {
+export function packageAsNewTrace<T>(spanName: TopLevelSpanName, data: T, moarAttributes: object = {}): Traced<T> {
   // really should be like this: https://github.com/open-telemetry/opentelemetry-js/blob/main/packages/opentelemetry-core/src/platform/browser/RandomIdGenerator.ts#L34
   const newTraceId = uuid.v4();
   const newSpanId: string = generateSpanId();
@@ -40,7 +40,7 @@ export function packageAsNewTrace<T>(spanName: TopLevelSpanName, data: T): Trace
     spanName,
     data,
   };
-  sendSpanEventToHoneycomb(result);
+  sendSpanEventToHoneycomb(result, moarAttributes);
   return result;
 }
 
@@ -53,7 +53,7 @@ export function generateInnerSpanMetadata<T>(trace: TraceMetadata): TraceMetadat
   };
 }
 
-export function withSpan<T, R>(traced: Traced<T>, spanName: string, f: (data: T) => R): Traced<R> {
+export function withSpan<T, R>(traced: Traced<T>, spanName: string, f: (data: T) => R, moarAttributes: object = {}): Traced<R> {
   const newSpanTraceMetadata = generateInnerSpanMetadata(traced.trace);
   const timestamp = Date.now();
   const res = f(traced.data);
@@ -65,7 +65,7 @@ export function withSpan<T, R>(traced: Traced<T>, spanName: string, f: (data: T)
     spanName,
     data: res,
   }
-  sendSpanEventToHoneycomb(tracedResult);
+  sendSpanEventToHoneycomb(tracedResult, moarAttributes);
   return tracedResult;
 }
 
@@ -99,18 +99,18 @@ export function sendSomethingToHoneycomb(data: object) {
 const ServiceName = "featureclicker";
 
 // https://docs.honeycomb.io/getting-data-in/tracing/send-trace-data/#manual-tracing
-function sendSpanEventToHoneycomb(traced: Traced<any>) {
+function sendSpanEventToHoneycomb(traced: Traced<any>, moar: object) {
   const augmentedData = {
-    ...traced.data,
-    sessionId,
-    "duration_ms":
-      traced.duration_ms,
+    "app.data": JSON.stringify(traced.data),
+    "app.sessionId": sessionId,
+    "duration_ms": traced.duration_ms,
     "name": traced.spanName,
     "service_name": ServiceName,
     "trace.trace_id": traced.trace.trace_id,
     "trace.parent_id": traced.trace.parent_id,
     "trace.span_id": traced.trace.span_id,
     "app.timestamp": "" + traced.timestamp, // this is for my own info
+    ...moar,
   }
   fetch('https://api.honeycomb.io/1/events/featureclicker',
     {

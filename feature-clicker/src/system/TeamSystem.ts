@@ -117,7 +117,7 @@ export class TeamSystem {
               return StatusStatus.OutOfDate; // I changed my name since last send
             }
             return StatusStatus.UpToDate; // well, looks like they're close enough
-          })
+          }, { teamMemberName: latestName, tick: tracedCurrentStatus.data.tick })
         ));
 
 
