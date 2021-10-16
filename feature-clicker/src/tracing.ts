@@ -101,7 +101,7 @@ const ServiceName = "featureclicker";
 // https://docs.honeycomb.io/getting-data-in/tracing/send-trace-data/#manual-tracing
 function sendSpanEventToHoneycomb(traced: Traced<any>, moar: object) {
   const augmentedData = {
-    "app.data": JSON.stringify(traced.data),
+    "app.data": traced.data,
     "app.sessionId": sessionId,
     "duration_ms": traced.duration_ms,
     "name": traced.spanName,
