@@ -94,7 +94,7 @@ export class TeamSystem {
     // wrap status report in message details, so it's the same format we expect to receive
     const reportsToSend = triggerReport.pipe(withLatestFrom(memberName, individualStatus),
       map(([_tps, yourName, myEvent]) => {
-        const te: ReceivedEvent = { from: { teamMemberId, teamMemberName: yourName }, about: myEvent };
+        const te: ReceivedEvent = { from: { teamMemberId, teamMemberName: yourName }, about: myEvent.data }; // TODO: use tracing
         return te;
       }))
     reportsToSend.subscribe(eventsToServer)

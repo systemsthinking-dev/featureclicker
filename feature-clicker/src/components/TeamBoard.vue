@@ -36,6 +36,7 @@ import {
   TeamSystem,
 } from "@/system/TeamSystem";
 import { map } from "rxjs/operators";
+import { withSpan } from "@/tracing";
 
 @Component<TeamBoard>({
   subscriptions() {
@@ -45,7 +46,13 @@ import { map } from "rxjs/operators";
         map((status) => status === ConnectionStatus.Connected)
       ),
       reportNeeded: this.teamSystem.statusUptodateness.pipe(
-        map((s) => s === StatusStatus.OutOfDate)
+        map((traced) =>
+          withSpan(
+            traced,
+            "determine reportNeeded",
+            (s) => s === StatusStatus.OutOfDate
+          )
+        )
       ),
     };
   },
