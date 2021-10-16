@@ -11,7 +11,7 @@ type TraceMetadata = {
 export type Traced<T> = {
   trace: TraceMetadata,
   duration_ms: number,
-  name: string,
+  spanName: string,
   data: T,
 };
 
@@ -34,7 +34,7 @@ export function packageAsNewTrace<T>(spanName: TopLevelSpanName, data: T): Trace
       parent_id: undefined,
     },
     duration_ms: 0,
-    name: spanName,
+    spanName,
     data,
   };
   sendSpanEventToHoneycomb(result);
@@ -57,7 +57,7 @@ export function withSpan<T, R>(traced: Traced<T>, spanName: string, f: (data: T)
   const tracedResult: Traced<R> = {
     trace: newSpanTraceMetadata,
     duration_ms: 0,
-    name: spanName,
+    spanName,
     data: res,
   }
   sendSpanEventToHoneycomb(tracedResult);
@@ -100,7 +100,7 @@ function sendSpanEventToHoneycomb(traced: Traced<any>) {
     sessionId,
     "duration_ms":
       traced.duration_ms,
-    "name": traced.name,
+    "name": traced.spanName,
     "service_name": ServiceName,
     "trace.trace_id": traced.trace.trace_id,
     "trace.parent_id": traced.trace.parent_id,
