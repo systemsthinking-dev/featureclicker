@@ -4,6 +4,7 @@
  * this is an edge. Settling for underscores.
  */
 
+import { Traced, tracedInSpan } from "@/tracing";
 import { combineLatest, merge, Observable, Observer, Subject } from "rxjs";
 import { map, withLatestFrom, startWith, pluck } from "rxjs/operators";
 import { SecondsSinceBegin, ValuePerSecond } from "./IndividualWork";
@@ -17,7 +18,7 @@ export function isDifferentStatus(a: StatusReport, b: StatusReport): boolean {
 }
 
 export type IndividualInterface = {
-  clock: Observable<SecondsSinceBegin>;
+  clock: Observable<Traced<SecondsSinceBegin>>;
   vps: Observable<ValuePerSecond>;
   teamCapabilityStock: Observer<ValuePerSecond>;
 }
@@ -28,7 +29,7 @@ export type TeamInterface = {
 }
 
 export class Individual_within_Team {
-  public clock = new Subject<SecondsSinceBegin>();
+  public clock = new Subject<Traced<SecondsSinceBegin>>();
   public vps = new Subject<ValuePerSecond>();
   public teamCapabilityStockAtTime = new Subject<TeamVpsAtTime>();
 
@@ -47,7 +48,11 @@ export class Individual_within_Team {
   public hookUpTeam(team: TeamInterface) {
     // fire whenever vps changes or the clock ticks
     combineLatest([this.vps, this.clock]).pipe(
-      map(([vps, tick]) => ({ tick, vps })),
+      map<[ValuePerSecond, Traced<SecondsSinceBegin>], Traced<{ tick: SecondsSinceBegin, vps: ValuePerSecond }>>(
+        ([vps, tracedTick]) => {
+          const tick = tracedTick.data;
+          return tracedInSpan(tracedTick.trace, { tick, vps })
+        }),
       startWith({ tick: 0, vps: 0 }))
       .subscribe(team.individualStatus);
     team.teamCapabilityStockAtTime.subscribe(this.teamCapabilityStockAtTime);

@@ -13,16 +13,37 @@ export type Traced<T> = {
   data: T,
 };
 
+
+function generateSpanId() {
+  return uuid.v1();
+}
+
 export function packageAsNewTrace<T>(data: T): Traced<T> {
   // really should be like this: https://github.com/open-telemetry/opentelemetry-js/blob/main/packages/opentelemetry-core/src/platform/browser/RandomIdGenerator.ts#L34
   const newTraceId = uuid.v4();
-  const newSpanId: string = uuid.v1();
+  const newSpanId: string = generateSpanId();
   return {
     trace: {
       trace_id: newTraceId,
       span_id: newSpanId,
       parent_id: undefined,
     },
+    data,
+  }
+}
+
+export function generateInnerSpanMetadata<T>(trace: TraceMetadata): TraceMetadata {
+  const newSpanId: string = generateSpanId();
+  return {
+    trace_id: trace.trace_id,
+    span_id: newSpanId,
+    parent_id: trace.span_id,
+  };
+}
+
+export function tracedInSpan<T>(trace: TraceMetadata, data: T): Traced<T> {
+  return {
+    trace: generateInnerSpanMetadata(trace),
     data,
   }
 }
