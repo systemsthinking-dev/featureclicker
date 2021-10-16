@@ -17,9 +17,10 @@ export class IndividualWork {
     this.featureWorkDone = new Subject<ClickOnFeatureWork>();
     this.capabilityStock = new BehaviorSubject<ValuePerSecond>(0);
     this.totalValueCreated = new BehaviorSubject<ValueCreated>(0);
+    const everySecond = timer(0, 1000);
     this.secondsSinceBegin = this.featureWorkDone.pipe(
       first(), // on the first click,
-      mergeMap(_t => timer(0, 1000)), // start emitting numbers every second
+      mergeMap(_firstClickStartsTheClock => everySecond), // start emitting numbers every second
       startWith(0)); // before that, be 0
 
     const teamCapabilityStock: Subject<ValuePerSecond> = new BehaviorSubject(0);
