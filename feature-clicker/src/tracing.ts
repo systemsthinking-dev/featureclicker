@@ -3,6 +3,7 @@ import * as uuid from "uuid";
 type TraceId = string; // really should be as specified in w3c tracing spec
 type SpanId = string;
 type ParentSpanId = string | undefined;
+type SpanBeginTimestamp = number; // Unix timestamp
 type TraceMetadata = {
   trace_id: TraceId,
   span_id: SpanId,
@@ -10,6 +11,7 @@ type TraceMetadata = {
 };
 export type Traced<T> = {
   trace: TraceMetadata,
+  timestamp: SpanBeginTimestamp,
   duration_ms: number,
   spanName: string,
   data: T,
@@ -33,6 +35,7 @@ export function packageAsNewTrace<T>(spanName: TopLevelSpanName, data: T): Trace
       span_id: newSpanId,
       parent_id: undefined,
     },
+    timestamp: Date.now(),
     duration_ms: 0,
     spanName,
     data,
@@ -52,11 +55,13 @@ export function generateInnerSpanMetadata<T>(trace: TraceMetadata): TraceMetadat
 
 export function withSpan<T, R>(traced: Traced<T>, spanName: string, f: (data: T) => R): Traced<R> {
   const newSpanTraceMetadata = generateInnerSpanMetadata(traced.trace);
-
+  const timestamp = Date.now();
   const res = f(traced.data);
+  const endTimestamp = Date.now();
   const tracedResult: Traced<R> = {
     trace: newSpanTraceMetadata,
-    duration_ms: 0,
+    timestamp,
+    duration_ms: endTimestamp - timestamp,
     spanName,
     data: res,
   }
@@ -104,7 +109,8 @@ function sendSpanEventToHoneycomb(traced: Traced<any>) {
     "service_name": ServiceName,
     "trace.trace_id": traced.trace.trace_id,
     "trace.parent_id": traced.trace.parent_id,
-    "trace.span_id": traced.trace.span_id
+    "trace.span_id": traced.trace.span_id,
+    "app.timestamp": "" + traced.timestamp, // this is for my own info
   }
   fetch('https://api.honeycomb.io/1/events/featureclicker',
     {
@@ -112,7 +118,8 @@ function sendSpanEventToHoneycomb(traced: Traced<any>) {
       body: JSON.stringify(augmentedData),
       headers: {
         'Content-Type': 'application/json',
-        'X-Honeycomb-Team': '430eb2f22c137f6ff63980a3a332b4ac'
+        'X-Honeycomb-Team': '430eb2f22c137f6ff63980a3a332b4ac',
+        'X-Honeycomb-Event-Time': "" + traced.timestamp,
       },
     })
     .then(response => {
