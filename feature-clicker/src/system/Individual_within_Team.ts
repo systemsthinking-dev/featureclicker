@@ -34,7 +34,7 @@ export class Individual_within_Team {
   public teamCapabilityStockAtTime = new Subject<TeamVpsAtTime>();
 
   constructor() {
-    this.clock.next(packageAsNewTrace(0));
+    this.clock.next(packageAsNewTrace("starting value of clock in Individual_within_team", 0));
     this.vps.next(0);
   }
 
@@ -51,9 +51,9 @@ export class Individual_within_Team {
       map<[ValuePerSecond, Traced<SecondsSinceBegin>], Traced<StatusReport>>(
         ([vps, tracedTick]) => {
           const tick = tracedTick.data;
-          return tracedInSpan<StatusReport>(tracedTick.trace, { tick, vps })
+          return tracedInSpan<StatusReport>(tracedTick.trace, "construct status report", { tick, vps })
         }),
-      startWith(packageAsNewTrace({ tick: 0, vps: 0 })))
+      startWith(packageAsNewTrace("starting value of status report", { tick: 0, vps: 0 })))
       .subscribe(team.individualStatus);
     team.teamCapabilityStockAtTime.subscribe(this.teamCapabilityStockAtTime);
   }

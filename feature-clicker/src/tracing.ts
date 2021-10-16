@@ -11,6 +11,7 @@ type TraceMetadata = {
 export type Traced<T> = {
   trace: TraceMetadata,
   data: T,
+  name: string,
 };
 
 
@@ -18,7 +19,10 @@ function generateSpanId() {
   return uuid.v1();
 }
 
-export function packageAsNewTrace<T>(data: T): Traced<T> {
+// I can enumerate these here if I want
+type TopLevelSpanName = string;
+
+export function packageAsNewTrace<T>(spanName: TopLevelSpanName, data: T): Traced<T> {
   // really should be like this: https://github.com/open-telemetry/opentelemetry-js/blob/main/packages/opentelemetry-core/src/platform/browser/RandomIdGenerator.ts#L34
   const newTraceId = uuid.v4();
   const newSpanId: string = generateSpanId();
@@ -28,6 +32,7 @@ export function packageAsNewTrace<T>(data: T): Traced<T> {
       span_id: newSpanId,
       parent_id: undefined,
     },
+    name: spanName,
     data,
   }
 }
@@ -41,9 +46,10 @@ export function generateInnerSpanMetadata<T>(trace: TraceMetadata): TraceMetadat
   };
 }
 
-export function tracedInSpan<T>(trace: TraceMetadata, data: T): Traced<T> {
+export function tracedInSpan<T>(trace: TraceMetadata, spanName: string, data: T): Traced<T> {
   return {
     trace: generateInnerSpanMetadata(trace),
+    name: spanName,
     data,
   }
 }

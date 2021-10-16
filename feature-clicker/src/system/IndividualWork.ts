@@ -21,11 +21,12 @@ export class IndividualWork {
     this.featureWorkDone = new Subject<ClickOnFeatureWork>();
     this.capabilityStock = new BehaviorSubject<ValuePerSecond>(0);
     this.totalValueCreated = new BehaviorSubject<ValueCreated>(0);
-    const everySecond = timer(0, 1000).pipe(map(seconds => packageAsNewTrace(seconds)));
+    const everySecond = timer(0, 1000).pipe(map(seconds =>
+      packageAsNewTrace("tick", seconds)));
     this.secondsSinceBegin = this.featureWorkDone.pipe(
       first(), // on the first click,
       mergeMap(_firstClickStartsTheClock => everySecond), // start emitting numbers every second
-      startWith(packageAsNewTrace(0))); // before that, be 0
+      startWith(packageAsNewTrace("starting value of secondsSinceBegin in IndividualWork", 0))); // before that, be 0
 
     const teamCapabilityStock: Subject<ValuePerSecond> = new BehaviorSubject(0);
     const valueOfEachClick: Observable<CapabilityStockGeneratedPerClickOfWork> =
