@@ -4,6 +4,17 @@
 
 What could be more fun than work? Pretend work!
 
+## developing
+
+This started from a generated Vue project.
+
+`npm run serve`
+
+Click. Open two windows and click a bunch in both of them.
+
+Now run this query (logged in to Honeycomb as me, or on my Jessitron team): https://ui.honeycomb.io/jessitron/datasets/featureclicker/result/4vwGYKpVcJd?omitMissingValues
+
+
 ## errata
 
 backend is from: https://github.com/aws-samples/simple-websockets-chat-app
