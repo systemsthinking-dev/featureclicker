@@ -39,7 +39,7 @@ export function packageAsNewTrace<T>(spanName: TopLevelSpanName, data: T): Trace
     name: spanName,
     data,
   };
-  sendSomethingToHoneycomb(result);
+  sendSpanEventToHoneycomb(result);
   return result;
 }
 
@@ -56,20 +56,22 @@ export function withSpan<T, R>(traced: Traced<T>, spanName: string, f: (data: T)
   const newSpanTraceMetadata = generateInnerSpanMetadata(traced.trace);
 
   const res = f(traced.data);
-
-  return {
+  const tracedResult: Traced<R> = {
     trace: newSpanTraceMetadata,
     service_name: "featureclicker",
     duration_ms: 0,
     name: spanName,
     data: res,
   }
+  sendSpanEventToHoneycomb(tracedResult);
+  return tracedResult;
 }
 
 // set once per program
 const sessionId: string = uuid.v4();
 
-// https://docs.honeycomb.io/getting-data-in/tracing/send-trace-data/#manual-tracing
+
+// deprecated
 export function sendSomethingToHoneycomb(data: object) {
   const augmentedData = { ...data, sessionId }
   fetch('https://api.honeycomb.io/1/events/featureclicker',
@@ -85,6 +87,38 @@ export function sendSomethingToHoneycomb(data: object) {
       // console.log("Got from honeycomb: ", response);
       if (response.status === 200) {
         console.log("Transmitted to Honeycomb: ", data);
+      } else {
+        console.error("Failed to send data to Honeycomb: ", response);
+      }
+    });
+}
+
+// https://docs.honeycomb.io/getting-data-in/tracing/send-trace-data/#manual-tracing
+function sendSpanEventToHoneycomb(traced: Traced<any>) {
+  const augmentedData = {
+    ...traced.data,
+    sessionId,
+    "duration_ms":
+      traced.duration_ms,
+    "name": traced.name,
+    "service_name": traced.service_name,
+    "trace.trace_id": traced.trace.trace_id,
+    "trace.parent_id": traced.trace.parent_id,
+    "trace.span_id": traced.trace.span_id
+  }
+  fetch('https://api.honeycomb.io/1/events/featureclicker',
+    {
+      method: 'POST',
+      body: JSON.stringify(augmentedData),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Honeycomb-Team': '430eb2f22c137f6ff63980a3a332b4ac'
+      },
+    })
+    .then(response => {
+      // console.log("Got from honeycomb: ", response);
+      if (response.status === 200) {
+        console.log("Transmitted to Honeycomb: ", augmentedData);
       } else {
         console.error("Failed to send data to Honeycomb: ", response);
       }
