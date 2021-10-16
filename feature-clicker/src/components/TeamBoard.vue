@@ -20,7 +20,7 @@
       v-stream:click.stop="teamSystem.triggerReport"
       :class="{ needed: reportNeeded }"
     >
-      Report
+      Integrate
     </button>
   </div>
 </template>
@@ -98,7 +98,6 @@ button {
   margin: 10px;
   padding: 10px;
   height: 5em;
-  width: 5em;
   font-weight: bold;
   border-width: 2px;
 }
