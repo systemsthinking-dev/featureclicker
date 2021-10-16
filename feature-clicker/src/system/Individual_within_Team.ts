@@ -4,7 +4,7 @@
  * this is an edge. Settling for underscores.
  */
 
-import { packageAsNewTrace, Traced, tracedInSpan } from "@/tracing";
+import { packageAsNewTrace, Traced, withSpan } from "@/tracing";
 import { combineLatest, merge, Observable, Observer, Subject } from "rxjs";
 import { map, withLatestFrom, startWith, pluck } from "rxjs/operators";
 import { SecondsSinceBegin, ValuePerSecond } from "./IndividualWork";
@@ -50,8 +50,8 @@ export class Individual_within_Team {
     combineLatest([this.vps, this.clock]).pipe(
       map<[ValuePerSecond, Traced<SecondsSinceBegin>], Traced<StatusReport>>(
         ([vps, tracedTick]) => {
-          const tick = tracedTick.data;
-          return tracedInSpan<StatusReport>(tracedTick.trace, "construct status report", { tick, vps })
+          return withSpan<SecondsSinceBegin, StatusReport>(tracedTick, "construct status report",
+            (tick) => ({ tick, vps }))
         }),
       startWith(packageAsNewTrace("starting value of status report", { tick: 0, vps: 0 })))
       .subscribe(team.individualStatus);

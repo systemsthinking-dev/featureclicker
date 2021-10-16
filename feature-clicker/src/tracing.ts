@@ -46,14 +46,6 @@ export function generateInnerSpanMetadata<T>(trace: TraceMetadata): TraceMetadat
   };
 }
 
-export function tracedInSpan<T>(trace: TraceMetadata, spanName: string, data: T): Traced<T> {
-  return {
-    trace: generateInnerSpanMetadata(trace),
-    name: spanName,
-    data,
-  }
-}
-
 export function withSpan<T, R>(traced: Traced<T>, spanName: string, f: (data: T) => R): Traced<R> {
   const newSpanTraceMetadata = generateInnerSpanMetadata(traced.trace);
 
