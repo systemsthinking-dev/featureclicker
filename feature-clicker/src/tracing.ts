@@ -10,7 +10,6 @@ type TraceMetadata = {
 };
 export type Traced<T> = {
   trace: TraceMetadata,
-  service_name: "featureclicker",
   duration_ms: number,
   name: string,
   data: T,
@@ -34,7 +33,6 @@ export function packageAsNewTrace<T>(spanName: TopLevelSpanName, data: T): Trace
       span_id: newSpanId,
       parent_id: undefined,
     },
-    service_name: "featureclicker",
     duration_ms: 0,
     name: spanName,
     data,
@@ -58,7 +56,6 @@ export function withSpan<T, R>(traced: Traced<T>, spanName: string, f: (data: T)
   const res = f(traced.data);
   const tracedResult: Traced<R> = {
     trace: newSpanTraceMetadata,
-    service_name: "featureclicker",
     duration_ms: 0,
     name: spanName,
     data: res,
@@ -93,6 +90,9 @@ export function sendSomethingToHoneycomb(data: object) {
     });
 }
 
+
+const ServiceName = "featureclicker";
+
 // https://docs.honeycomb.io/getting-data-in/tracing/send-trace-data/#manual-tracing
 function sendSpanEventToHoneycomb(traced: Traced<any>) {
   const augmentedData = {
@@ -101,7 +101,7 @@ function sendSpanEventToHoneycomb(traced: Traced<any>) {
     "duration_ms":
       traced.duration_ms,
     "name": traced.name,
-    "service_name": traced.service_name,
+    "service_name": ServiceName,
     "trace.trace_id": traced.trace.trace_id,
     "trace.parent_id": traced.trace.parent_id,
     "trace.span_id": traced.trace.span_id
