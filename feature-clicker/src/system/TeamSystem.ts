@@ -5,6 +5,7 @@ import { map, scan, startWith, withLatestFrom } from "rxjs/operators";
 import { v4 as uuid } from "uuid";
 import { Individual_within_Team, isDifferentStatus, StatusReport } from "./Individual_within_Team";
 import { ConnectionStatus, wireUpTheWebsocket } from "./backendInterface";
+import { Traced, withSpan } from "@/tracing";
 
 //export type TeamConnectionStatus = Connected | NotYetConnected | Failed
 export { ConnectionStatus } from "./backendInterface";
@@ -88,7 +89,7 @@ export class TeamSystem {
      */
     const triggerReport = new Subject<SendStatusReportPlease>();
     this.triggerReport = triggerReport;
-    const individualStatus = new Subject<StatusReport>();
+    const individualStatus = new Subject<Traced<StatusReport>>();
     const teamMemberId = this.teamMemberId;
     // wrap status report in message details, so it's the same format we expect to receive
     const reportsToSend = triggerReport.pipe(withLatestFrom(memberName, individualStatus),
@@ -102,19 +103,21 @@ export class TeamSystem {
     this.statusUptodateness = combineLatest([individualStatus,
       reportsToSend.pipe(startWith(null)), // otherwise this observable won't fire until they all have a value
       memberName]).pipe(
-        map(([currentStatus, lastMessageSent, latestName]) => {
-          if (lastMessageSent === null) {
-            // if a report hasn't fired yet, it's definitely out of date
-            return StatusStatus.OutOfDate;
-          }
-          const lastSentStatus = lastMessageSent.about;
-          if (isDifferentStatus(currentStatus, lastSentStatus)) {
-            return StatusStatus.OutOfDate; // something has changed since it was sent
-          }
-          if (latestName !== lastMessageSent.from.teamMemberName) {
-            return StatusStatus.OutOfDate; // I changed my name since last send
-          }
-          return StatusStatus.UpToDate; // well, looks like they're close enough
+        map(([tracedCurrentStatus, lastMessageSent, latestName]) => {
+          withSpan(tracedCurrentStatus, "determine status uptodateness", (currentStatus: StatusReport) => {
+            if (lastMessageSent === null) {
+              // if a report hasn't fired yet, it's definitely out of date
+              return StatusStatus.OutOfDate;
+            }
+            const lastSentStatus = lastMessageSent.about;
+            if (isDifferentStatus(currentStatus, lastSentStatus)) {
+              return StatusStatus.OutOfDate; // something has changed since it was sent
+            }
+            if (latestName !== lastMessageSent.from.teamMemberName) {
+              return StatusStatus.OutOfDate; // I changed my name since last send
+            }
+            return StatusStatus.UpToDate; // well, looks like they're close enough
+          })
         }));
 
 

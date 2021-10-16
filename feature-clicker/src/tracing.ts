@@ -54,6 +54,17 @@ export function tracedInSpan<T>(trace: TraceMetadata, spanName: string, data: T)
   }
 }
 
+export function withSpan<T, R>(traced: Traced<T>, spanName: string, f: (data: T) => R): Traced<R> {
+  const newSpanTraceMetadata = generateInnerSpanMetadata(traced.trace);
+
+  const res = f(traced.data);
+  return {
+    trace: newSpanTraceMetadata,
+    name: spanName,
+    data: res,
+  }
+}
+
 // set once per program
 const sessionId: string = uuid.v4();
 
