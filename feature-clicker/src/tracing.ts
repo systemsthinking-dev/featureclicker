@@ -10,8 +10,10 @@ type TraceMetadata = {
 };
 export type Traced<T> = {
   trace: TraceMetadata,
-  data: T,
+  service_name: "featureclicker",
+  duration_ms: number,
   name: string,
+  data: T,
 };
 
 
@@ -26,15 +28,19 @@ export function packageAsNewTrace<T>(spanName: TopLevelSpanName, data: T): Trace
   // really should be like this: https://github.com/open-telemetry/opentelemetry-js/blob/main/packages/opentelemetry-core/src/platform/browser/RandomIdGenerator.ts#L34
   const newTraceId = uuid.v4();
   const newSpanId: string = generateSpanId();
-  return {
+  const result: Traced<T> = {
     trace: {
       trace_id: newTraceId,
       span_id: newSpanId,
       parent_id: undefined,
     },
+    service_name: "featureclicker",
+    duration_ms: 0,
     name: spanName,
     data,
-  }
+  };
+  sendSomethingToHoneycomb(result);
+  return result;
 }
 
 export function generateInnerSpanMetadata<T>(trace: TraceMetadata): TraceMetadata {
@@ -50,8 +56,11 @@ export function withSpan<T, R>(traced: Traced<T>, spanName: string, f: (data: T)
   const newSpanTraceMetadata = generateInnerSpanMetadata(traced.trace);
 
   const res = f(traced.data);
+
   return {
     trace: newSpanTraceMetadata,
+    service_name: "featureclicker",
+    duration_ms: 0,
     name: spanName,
     data: res,
   }
@@ -60,6 +69,7 @@ export function withSpan<T, R>(traced: Traced<T>, spanName: string, f: (data: T)
 // set once per program
 const sessionId: string = uuid.v4();
 
+// https://docs.honeycomb.io/getting-data-in/tracing/send-trace-data/#manual-tracing
 export function sendSomethingToHoneycomb(data: object) {
   const augmentedData = { ...data, sessionId }
   fetch('https://api.honeycomb.io/1/events/featureclicker',

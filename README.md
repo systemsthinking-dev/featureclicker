@@ -8,6 +8,8 @@ What could be more fun than work? Pretend work!
 
 This started from a generated Vue project.
 
+`cd feature-clicker`
+
 `npm run serve`
 
 Click. Open two windows and click a bunch in both of them.
